@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Portal</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!--   NAVIGATION BAR  -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1>Student Attendance Portal</h1>
+        </div>
+        <div class="navbar-actions">
+            <span id="currentDateTime" class="datetime-display"></span>
+            <button class="theme-toggle" onclick="toggleTheme()">Dark</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER OF THE PROJECT -->
+
+    <div class="container">
+
+        <!-- HEADER -->
+         <div class="section-header">
+            <h2> Mark Attendance</h2>
+            <div class="header-actions">
+                <span class="academic-badge">Academic Year: 2026-27</span>
+            </div>
+         </div>
+
+<!--  TOOLBAR -->
+ <div class="toolbar">
+    <button class="btn btn-primary btn-sm" onclick="showAddStudentForm()">Add Student</button>
+    <button class="btn btn-success btn-sm" onclick="showAddClassForm()">Add Class</button>
+    <button class="btn btn-warning btn-sm" onclick="exportToCSV()">Export CSV</button>
+    <button class = "btn btn-info btn-sm" onclick="exportToPDF()">Export PDF</button>
+    <button class="btn btn-danger btn-sm" onclick="resetAttendance()">Reset</button>
+ </div>
+
+
+
+  <!-- CLASS SELECTOR -->
+   <div class="form-group">
+    <label for="classSelector">Select Class:</label>
+    <select id="classSelector" required onchange="showStudentList()">
+        <option value="">--Select a Class</option>
+    </select>
+   </div>
+
+    <!-- STUDENT LIST -->
+
+    <div class="studentListContainer">
+        <h3>Students</h3>
+        <ul id="studentsList" class="student-list">
+
+
+
+        </ul>
+    </div>
+
+    <!-- SUMMARY SECTION -->
+     <div class="summarySection" style="display: ;">
+        <h3>Attendance Summary</h3>
+        <div class="summary-grid">
+            <div class="summary-card total">
+                <div class="number" id="totalStudents">0</div>
+                <div class="label">Total Students</div>
+            </div>
+            <div class="summary-card present">
+                <div class="number" id="totalPresent">0</div>
+                <div class="label">Present</div>
+            </div>
+            <div class="summary-card absent">
+                <div class="number" id="totalAbsent">0</div>
+                <div class="label">Absent</div>
+            </div>
+            <div class="summary-card leave">
+                <div class="number" id="totalLeave">0</div>
+                <div class="label">Leave</div>
+            </div>
+        </div>
+        <div class="attendance-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="attendanceProgress" style="width: 0%;"></div>
+            </div>
+            <span id="attendancePercent">0% Present</span>
+        </div>
+     </div>
+
+<!--  SUBMIT BUTTON -->
+
+<button class="btn btn-primary submit-btn" onclick="submitAttendance()">Submit Attendance</button>
+
+
+<!-- RESULT SECTION -->
+ 
+    </div>
+
+
+
+</body>
+
+</html>

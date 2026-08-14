@@ -15,3 +15,10 @@ function toggleTheme(){
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon();
 }
+function loadThemePreference(){
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark'){
+        document.body.classList.add('dark-mode')
+    }
+    updateThemeIcon();
+}

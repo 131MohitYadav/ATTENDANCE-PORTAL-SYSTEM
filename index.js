@@ -22,3 +22,11 @@ function loadThemePreference(){
     }
     updateThemeIcon();
 }
+
+function updateThemeIcon(){
+    const btn = document.querySelector('.theme-toggle');
+    if(btn){
+        const isDark = document.body.classList.contains('dark-mode');
+        btn.innerHTML = isDark ? ' Light' : 'Dark';
+    }
+}

@@ -53,3 +53,20 @@ function updateDateTime(){
         dateTimeEl.textContent = `${dateStr} | ${timeStr}`;
     }
 }
+
+function getCurrentDate(){
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2,'0');
+    return `${year}-${month}-${day}`;
+}
+
+function getCurrentDate(){
+    const now = new Date();
+    return now.toLocaleDateString('en-IN', {
+        hour:'2-digit',
+        minute:'2-digit',
+        second: '2-digit'
+    });
+}

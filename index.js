@@ -30,3 +30,26 @@ function updateThemeIcon(){
         btn.innerHTML = isDark ? ' Light' : 'Dark';
     }
 }
+
+// DATE AND TIME // 
+ 
+function updateDateTime(){
+    const now = new Date();
+    const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    };
+    const dateStr = now.toLocaleDateString('en-IN', options);
+    const timeStr = now.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    const dateTimeEl = document.getElementById('currentDateTime');
+    if(dateTimeEl){
+        dateTimeEl.textContent = `${dateStr} | ${timeStr}`;
+    }
+}

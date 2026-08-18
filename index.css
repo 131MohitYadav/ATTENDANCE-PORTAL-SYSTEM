@@ -414,3 +414,39 @@ body.dark-mode #studentListContainer h3{
   min-width: 36px;
   
 }
+
+.status-btn.absent{
+  background: #e74c3c;
+}
+
+.status-btn.present{
+  background: #2ecc71;
+
+}
+
+.status-btn.leave{
+  background: #f39c12;
+}
+
+.status-btn:hover{
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.status-btn.active{
+  box-shadow: 0 0 0 3px white, 0 0 0 6px currentColor;
+  transform: scale(1.1);
+}
+
+.status-btn.edit-btn{
+  background: #3498db;
+}
+
+.status-btn.delete-btn{
+  background: #e74c3c;
+
+}
+
+
+/* SUMMARY CARD */
+

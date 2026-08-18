@@ -450,3 +450,22 @@ body.dark-mode #studentListContainer h3{
 
 /* SUMMARY CARD */
 
+#summarySection{
+  margin-top: 25px;
+}
+#summarySection h3{
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+body.dark-mode #summarySection h3{
+  color: #eee;
+}
+
+.summary-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+  margin-bottom: 18px;
+}
+

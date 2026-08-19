@@ -582,3 +582,16 @@ body.dark-mode #resultSection h3 {
   text-align: center;
   box-shadow: 0 2px 8px rgba(0 , 0, 0, 0.05);
 }
+
+body.dark-mode .result-item{
+  background: #16213e;
+}
+
+.result-item .result-label{
+  display: block;
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

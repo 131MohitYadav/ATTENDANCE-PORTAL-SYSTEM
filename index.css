@@ -516,3 +516,15 @@ body.dark-mode #summarySection h3{
   padding: 15px;
   text-align: center;
 }
+
+body.dark-mode .attendance-progress{
+  background: #1a1a2e;
+}
+
+.progress-bar{
+  height: 10px;
+  background: #dce1e6;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}

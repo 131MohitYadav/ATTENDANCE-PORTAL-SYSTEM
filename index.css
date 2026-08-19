@@ -550,3 +550,12 @@ body.dark-mode #attendancePercent{
 }
 
 
+/* RESULT SECTION */
+
+#resultSection{
+  margin-top: 25px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 5px solid #3498db;
+}

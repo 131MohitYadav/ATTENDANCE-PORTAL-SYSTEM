@@ -528,3 +528,12 @@ body.dark-mode .attendance-progress{
   overflow: hidden;
   margin-bottom: 8px;
 }
+
+body.dark-mode .progress-bar{
+  background: #2a2a4a;
+}
+
+.progress-fill{
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+}

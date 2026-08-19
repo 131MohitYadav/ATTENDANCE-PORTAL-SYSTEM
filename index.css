@@ -635,3 +635,35 @@ body.dark-mode .result-item .result-value{
   align-items: center;
   animation: fadeIn 0.3s;
 }
+
+.popup-overlay.active{
+  display: flex;
+}
+
+.popup{
+  background: white;
+  padding: 35px;
+  border-radius: 20px;
+  min-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0 , 0, 0, 0.03);
+  animation: slideUp 0.3s ease;
+}
+
+.popup h2{
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.popup .popup-actions{
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.popup .popup-actions .btn{
+  flex: 1;
+  justify-content: center;
+}
+
+/* TOAST  NOTIFICATION */

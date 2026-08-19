@@ -667,3 +667,24 @@ body.dark-mode .result-item .result-value{
 }
 
 /* TOAST  NOTIFICATION */
+
+.toast-container{
+  position: fixed;
+  bottom: 25px;
+  bottom: 25px;
+  z-index: 9999;
+  min-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast{
+  padding: 14px 22px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0 , 0, 0, 0.02);
+  animation: slideUp 0.3s ease;
+  font-size: 14px;
+}

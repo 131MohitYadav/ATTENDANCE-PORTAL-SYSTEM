@@ -595,3 +595,27 @@ body.dark-mode .result-item{
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+.result-item .result-value{
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+  color: #2c3e50;
+}
+
+body.dark-mode .result-item .result-value{
+  color: #eee;
+}
+
+.result-item.present-result .result-value{
+  color: #2ecc71;
+}
+
+.result-item.absent-result .result-value{
+  color: #e74c3c;
+}
+
+.result-item.leave-result .result-value{
+  color: #f39c12;
+}

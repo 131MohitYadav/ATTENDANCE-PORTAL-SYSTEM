@@ -559,3 +559,26 @@ body.dark-mode #attendancePercent{
   border-radius: 12px;
   border-left: 5px solid #3498db;
 }
+
+#resultSection h3{
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+body.dark-mode #resultSection h3 {
+  color: #eee;
+}
+
+.result-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.result-item{
+  padding: 14px;
+  background: white;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0 , 0, 0, 0.05);
+}

@@ -121,3 +121,9 @@ function saveClasses(){
     .map(opt => opt.value);
     localStorage.setItem('classes', JSON.stringify(savedClasses));
 }
+
+function showAddClassForm(){
+    doucment.getElementById('addClassPopup').classList.add('active');
+    document.getElementById('newClassName').value = '';
+    document.getElementById('newClassName').focus();
+}

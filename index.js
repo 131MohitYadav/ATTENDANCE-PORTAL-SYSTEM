@@ -177,3 +177,50 @@ function showAddStudentForm(){
     document.getElementById('newStudentName').value = '';
     document.getElementById('newStudentName').focus();
 }
+function addStudent(){
+    const name = document.getElementById('newStudentName').value.trim();
+    const roll = document.getElementById('newStudentRoll').value.trim();
+
+    if(!name || !roll){
+        showToast('please provide both name and roll number.', 'error');
+        return;
+    }
+    const classSelector = document.getElementById('classSelector');
+    const selectedClass = classSelector.value;
+
+    if(!selectedClass){
+        showToast('Please select a class.','error');
+        return;
+    }
+
+    // check for duplicate roll number
+    const savedStudents = JSON.parse(localStorage.getItem('students'))||
+    {};
+    const existingStudents = savedStudents[selectedClass] || [];
+    if(existingStudents.some(s => s.rollNumber === roll)){
+        showToast(`Roll number "${roll}" already exists in this class.`, 'error');
+        return;
+    }
+
+    // Add to User Interface
+    const studentsList = document.getElementById('studentsList');
+    const listItem = createStudentListItem(name, roll, selectedClass);
+    studentsList.appendChild(listItem);
+
+
+    // save to localStorage
+    saveStudentsList(selectedClass);
+    showSummary(selectedClass);
+    closePopup();
+    showToast(`Student "${name}" added successfully!`, 'success');
+
+    // clear inputs
+    document.getElementById('newStudentName').value = '';
+    document.getElementById('newStudentRoll').value = '';
+}
+
+function createStudentListItem(name, rollNumber, selectedClass){
+    const listItem = document.createElement('li');
+    listItem.className = 'student-item';
+    listItem.setAttribute('data')
+}

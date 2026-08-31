@@ -70,3 +70,54 @@ function getCurrentDate(){
         second: '2-digit'
     });
 }
+
+
+// TOAST NOTIFICATION //
+function showToast(message, type = 'info'){
+    const container = document.querySelector('.toast-container');
+    if(!container) return;
+
+    const toast = document.createElement('div');
+    const typeClasses = {
+        success: 'toast-success',
+        error: 'toast-error',
+        info: 'toast-info',
+        warning: 'toast-warning'
+    };
+
+    toast.className = `toast ${typeClasses[type] || typeClasses.info}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+    },3000);
+}
+
+
+// CLASS MANAGEMENT // 
+function populateClasses(){
+    const savedClasses = JSON.parse(localStorage.getItem('classes')) || [];
+    const classSelector = doucment.getElementById('classSelector');
+
+    // Clear existing options (keep first option)
+    classSelector.innerHTML = '<option value="">-- Select a Class --</option>';
+
+    savedClasses.forEach(className => {
+        const option = doucment.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        classSelector.appendChild(option);
+    });
+}
+
+function saveClasses(){
+    const classSelector = document.getElementById('classSelector');
+    const options = Array.from(classSelector.options);
+    const savedClasses = options
+    .filter(opt => opt.value !== '')
+    .map(opt => opt.value);
+    localStorage.setItem('classes', JSON.stringify(savedClasses));
+}

@@ -222,5 +222,10 @@ function addStudent(){
 function createStudentListItem(name, rollNumber, selectedClass){
     const listItem = document.createElement('li');
     listItem.className = 'student-item';
-    listItem.setAttribute('data')
+    listItem.setAttribute('data-roll-number', rollNumber);
+
+
+    const inforDiv = document.createElement('div');
+    inforDiv.className = 'student-info';
+    inforDiv.innerHTML
 }

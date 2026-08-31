@@ -126,4 +126,54 @@ function showAddClassForm(){
     doucment.getElementById('addClassPopup').classList.add('active');
     document.getElementById('newClassName').value = '';
     document.getElementById('newClassName').focus();
+
+}
+
+function addClass(){
+    const newClassName = document.getElementById('newClassName').value.trim();
+
+    if(!newClassName){
+        showToast('Please enter a class name.', 'error');
+        return;
+    }
+    // Check for duplicate
+    const classSelector = document.getElementById('classSelector');
+    const existingClasses = Array.from(classSelector.options).map(opt => opt.value);
+    if(existingClasses.includes(newClassName)){
+        showToast('Class already exists!', 'warning');
+        return;
+    }
+
+    const option = document.createElement('option');
+    option.value = newClassName;
+    option.textContent = newClassName;
+    classSelector.appendChild(option);
+
+    saveClasses();
+    closePopup();
+    showToast(`Class "${newClassName}" added successfully!`, 'success');
+    classSelector.value = newClassName;
+    showStudentsList();
+}
+
+// STUDENT MANAGEMENT //
+
+function showAddStudentForm(){
+    const classSelector = document.getElementById('classSelector');
+    if(!classSelector.value){
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+
+    document.getElementById('addStudentPopup').classList.add('active');
+    doucment.getElementById('newStudentName').value = '';
+    document.getElementById('newStudentRoll').value = '';
+
+    if(!classSelector.value){
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+    document.getElementById('addStudentPopup').classList.add('active');
+    document.getElementById('newStudentName').value = '';
+    document.getElementById('newStudentName').focus();
 }

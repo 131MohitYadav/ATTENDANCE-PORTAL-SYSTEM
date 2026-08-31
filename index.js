@@ -227,5 +227,38 @@ function createStudentListItem(name, rollNumber, selectedClass){
 
     const inforDiv = document.createElement('div');
     inforDiv.className = 'student-info';
-    inforDiv.innerHTML
+    inforDiv.innerHTML = `
+    <span class= "student-name">${escapeHtml(name)}</span>
+    <span class="student-roll">#${escapeHtml(rollNumber)}</span>
+    ;`
+    listItem.appendChild(infoDiv);
+
+    const actionDiv = document.createElement('div');
+    actionsDiv.className = 'student-actions';
+
+    const statuses = [
+        {
+            key: 'present', label: 'P', color:"#2ecc71"
+        },
+        {
+            key: 'absent', label: 'A', color: "#e74c3c"
+        },
+        {
+            key:'leave', label:'L', color: '#f39c12'
+        }
+    ];
+
+    statuses.forEach(status=> {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `status-btn ${status.key`;
+            btn.textContent = status.label;
+            btn.title = status.key.charAt(0).toUpperCase() + status.key.slice(1);
+            btn.onclick = () => markAttendance(status.key.listItem, selectedClass);
+            actionsDiv.appendChild(btn);
+    });
+
+    // Edit button
+
+    
 }

@@ -62,14 +62,14 @@ function getCurrentDate(){
     return `${year}-${month}-${day}`;
 }
 
-function getCurrentDate(){
-    const now = new Date();
-    return now.toLocaleDateString('en-IN', {
-        hour:'2-digit',
-        minute:'2-digit',
-        second: '2-digit'
-    });
-}
+// function getCurrentDate(){
+//     const now = new Date();
+//     return now.toLocaleDateString('en-IN', {
+//         hour:'2-digit',
+//         minute:'2-digit',
+//         second: '2-digit'
+//     });
+// }
 
 
 // TOAST NOTIFICATION //

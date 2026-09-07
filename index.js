@@ -100,13 +100,13 @@ function showToast(message, type = 'info'){
 // CLASS MANAGEMENT // 
 function populateClasses(){
     const savedClasses = JSON.parse(localStorage.getItem('classes')) || [];
-    const classSelector = doucment.getElementById('classSelector');
+    const classSelector = document.getElementById('classSelector');
 
     // Clear existing options (keep first option)
     classSelector.innerHTML = '<option value="">-- Select a Class --</option>';
 
     savedClasses.forEach(className => {
-        const option = doucment.createElement('option');
+        const option = document.createElement('option');
         option.value = className;
         option.textContent = className;
         classSelector.appendChild(option);
@@ -166,7 +166,7 @@ function showAddStudentForm(){
     }
 
     document.getElementById('addStudentPopup').classList.add('active');
-    doucment.getElementById('newStudentName').value = '';
+    document.getElementById('newStudentName').value = '';
     document.getElementById('newStudentRoll').value = '';
 
     if(!classSelector.value){

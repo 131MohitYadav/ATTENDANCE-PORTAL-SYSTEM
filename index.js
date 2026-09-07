@@ -178,8 +178,8 @@ function showAddStudentForm(){
 
 
 function addStudent(){
-     document.getElementById('newStudentName').value
-    document.getElementById('newStudentRoll').value
+    const name = document.getElementById('newStudentName').value
+     const roll = document.getElementById('newStudentRoll').value
 
     if(!name || !roll){
         showToast('please provide both name and roll number.', 'error');
@@ -225,15 +225,17 @@ function createStudentListItem(name, rollNumber, selectedClass){
     listItem.setAttribute('data-roll-number', rollNumber);
 
 
-    const inforDiv = document.createElement('div');
-    inforDiv.className = 'student-info';
-    inforDiv.innerHTML = `
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'student-info';
+
+    infoDiv.innerHTML = `
     <span class= "student-name">${escapeHtml(name)}</span>
     <span class="student-roll">#${escapeHtml(rollNumber)}</span>
     ;`
+
     listItem.appendChild(infoDiv);
 
-    const actionDiv = document.createElement('div');
+    const actionsDiv = document.createElement('div');
     actionsDiv.className = 'student-actions';
 
     const statuses = [
@@ -251,7 +253,8 @@ function createStudentListItem(name, rollNumber, selectedClass){
     statuses.forEach(status=> {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `status-btn ${status.key`;
+
+        btn.className = `status-btn ${status.key}`;
             btn.textContent = status.label;
             btn.title = status.key.charAt(0).toUpperCase() + status.key.slice(1);
             btn.onclick = () => markAttendance(status.key.listItem, selectedClass);
@@ -259,5 +262,4 @@ function createStudentListItem(name, rollNumber, selectedClass){
     });
 
         
-
-    
+}

@@ -178,8 +178,8 @@ function showAddStudentForm(){
     document.getElementById('newStudentName').focus();
 }
 function addStudent(){
-    const name = document.getElementById('newStudentName').value.trim();
-    const roll = document.getElementById('newStudentRoll').value.trim();
+     document.getElementById('newStudentName').value
+    document.getElementById('newStudentRoll').value
 
     if(!name || !roll){
         showToast('please provide both name and roll number.', 'error');

@@ -160,23 +160,23 @@ function addClass(){
 
 function showAddStudentForm(){
     const classSelector = document.getElementById('classSelector');
+    document.getElementById('classSelector');
+
     if(!classSelector.value){
-        showToast('Please select a class first.', 'warning');
+        showToast(
+            'Please select a class first.','warning'
+        );
         return;
     }
 
     document.getElementById('addStudentPopup').classList.add('active');
-    document.getElementById('newStudentName').value = '';
-    document.getElementById('newStudentRoll').value = '';
+    document.getElementById('new/StudentName').value
+    document.getElementById('newStudentRoll').value
 
-    if(!classSelector.value){
-        showToast('Please select a class first.', 'warning');
-        return;
-    }
-    document.getElementById('addStudentPopup').classList.add('active');
-    document.getElementById('newStudentName').value = '';
-    document.getElementById('newStudentName').focus();
+    document.getElementById('newStudentName').focus
 }
+
+
 function addStudent(){
      document.getElementById('newStudentName').value
     document.getElementById('newStudentRoll').value

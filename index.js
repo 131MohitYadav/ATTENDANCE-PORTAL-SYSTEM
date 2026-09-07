@@ -261,5 +261,41 @@ function createStudentListItem(name, rollNumber, selectedClass){
             actionsDiv.appendChild(btn);
     });
 
-        
-}
+
+
+    // Edit button
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'status-btn edit-btn';
+    editBtn.textContent = '✏️';
+    editBtn.title = 'Edit Student';
+    editBtn.onclick = () => editStudent(listItem, rollNumber);
+    actionsDiv.appendChild(editBtn);
+
+
+    // Delete Button
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'status-btn delete-btn';
+    delBtn.textContent = '🗑️';
+    delBtn.title = "Delete Student";
+    delBtn.onclick = () => deleteStudent(listItem, rollNumber);
+        actionsDiv.appendChild(delBtn);
+
+        listItem.appendChild(actionsDiv);
+
+        //Restore saved color
+        const savedColor = getSavedColor(selectedClass, rollNumber);
+        if(savedColor)
+            listItem.style.backgroundColor = savedColor;
+            const statusKey = Object.keys(getColorStatusMap()).find(key => getColorStatusMap()[key] === savedColor)
+        };
+        if (statusKey){
+            const btn = actionsDiv.querySelector(`${statusKey}`
+
+            );
+            if (btn) btn.classList.add('active');
+        }
+    
+    }

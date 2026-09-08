@@ -287,15 +287,16 @@ function createStudentListItem(name, rollNumber, selectedClass){
 
         //Restore saved color
         const savedColor = getSavedColor(selectedClass, rollNumber);
-        if(savedColor)
+        if(savedColor){
             listItem.style.backgroundColor = savedColor;
             const statusKey = Object.keys(getColorStatusMap()).find(key => getColorStatusMap()[key] === savedColor)
         };
         if (statusKey){
-            const btn = actionsDiv.querySelector(`${statusKey}`
+            const btn = actionsDiv.querySelector(`.${statusKey}`
 
             );
             if (btn) btn.classList.add('active');
         }
     
     }
+    return listItem;

@@ -614,5 +614,15 @@ function createStudentListItem(
     }
 
 
-    return listItem;
+    return listItem ;
 }
+
+function getColorStatusMap(){
+    return {
+        present: '#2ecc71',
+        absent:  '#e74c3c',
+        leave: '#f39c12'
+    };
+}
+
+

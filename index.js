@@ -648,5 +648,26 @@ function showStudentsList(){
         document.getElementById('resultSection').style.display = 'none';
         return;
     }
+
+    const studentsList = document.getElementById('studentList');
+    studentsList.innerHTML = '';
+
+    const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+    const selectedClassStudents = savedStudents[selectedClass] || [];
+
+    if( selectedClassStudents.length === 0){
+        studentsList.innerHTML = `
+        <div class = "empty-state">
+        <div class = "empty-icon">👤</div>
+        <h4> No Students</h4>
+        <p>Add students to this class using the "Add Student" button.</p>
+        </div>
+        `;
+    } else{
+        selectedClassStudents.forEach(student => {
+            const listItem = createStudentListItem(student.name, student.rollNumber, selectedClass);
+            studentsList.appendChild(listItem);
+        });
+    }
 }
 

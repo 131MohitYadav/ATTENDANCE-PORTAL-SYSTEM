@@ -700,4 +700,32 @@ function editStudent(listItem, rollNumber){
     const nameSpan = listItem.querySelector('.student-name');
     const currentName = nameSpan.textContent;
     const newName = prompt('Edit Student Name:, currentName');
+
+
+    if (newName !== null && newName.trim() !== ''){
+        const trimmedName = newName.trim();
+        nameSpan.textContent = trimmedName;
+
+        // Update in localStorage
+        const selectedClass = document.getElementById('classSelector').value;
+        const savedStudents =   JSON.parse(localStorage.getItem('students')) || {};
+        const studentIndex = students.findIndex(s => s.rollNumber === rollNumber);
+
+
+        if (studentIndex !== -1){
+            students[studentIndex].name = trimmedName;
+            savedStudents[selectedClass] = students;
+            localStorage.setItem('students', JSON.stringify(savedStudents));
+
+            // Update attendance records
+            const savedAttendance = JSON.parse(localStorage.getItem('attendanceData')) || [];
+            savedAttendance.forEach(record => {
+                if (record.rollNumber === rollNumber && record.class === selectedClass){
+                    record.name = trimmedName;
+                }
+            });
+            localStorage.setItem('attendanceData', JSON.stringify(savedAttendance));
+            showToast('Student name updated!', 'success');
+        }
+    }
 }

@@ -669,5 +669,35 @@ function showStudentsList(){
             studentsList.appendChild(listItem);
         });
     }
+
+    // Check if attendance is submitted
+    const resultSection = document.getElementById('resultSection');
+    const isAttendanceSubmitted = resultSection.style.display === 'block';
+
+    if(isAttendanceSubmitted){
+        showAttendanceResult(selectedClass);
+    } else{
+        showSummary(selectedClass);
+    }
 }
 
+function saveStudentsList(selectedClass){
+    const studentList = document.getElementById('studentsList');
+    const studentItems = studentList.querySelector('.student-item');
+    const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+    const students = Array.from(studentItems).map(item => ({
+        name: item.querySelector('.student-name').textContent,
+        rollNumber: item.getAttribute('data-roll-number')
+    }));
+
+    savedStudents[selectedClass] = students;
+    localStorage.setItem('students', JSON.stringify(savedStudents));
+}
+
+// STUDENT EDIT / DELETE 
+
+function editStudent(listItem, rollNumber){
+    const nameSpan = listItem.querySelector('.student-name');
+    const currentName = nameSpan.textContent;
+    const newName = prompt('Edit Student Name:, currentName');
+}

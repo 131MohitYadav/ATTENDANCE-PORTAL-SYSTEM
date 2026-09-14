@@ -624,5 +624,29 @@ function getColorStatusMap(){
         leave: '#f39c12'
     };
 }
+function escapeHtml(text){
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 
+}
+
+function showStudentsList(){
+    const classSelector = document.getElementById('classSelector');
+    const selectedClass = classSelector.value;
+
+     
+    if(!selectedClass){
+        document.getElementById('studentsList').innerHTML = `
+        <div class = "empty-state">
+        <div class =empty-icons">📚</div>
+        <h4> No Class Selected</h4>
+        <p>Please select a class to view students.</p>
+        </div>
+        `;
+        document.getElementById('summarySection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        return;
+    }
+}
 

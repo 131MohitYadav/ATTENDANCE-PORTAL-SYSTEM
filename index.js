@@ -729,3 +729,38 @@ function editStudent(listItem, rollNumber){
         }
     }
 }
+
+function deleteStudent(listItem, rollNumber){
+    if(!confirm(` Are you sure you want to remove this student?`)) return;
+
+    const selectedClass = document.getElementById('classSelector').value;
+
+    // Remove from localStorage
+    const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+    const students = savedStudents[selectedClass] || [];
+    const updatedStudents = students.filter(s => s.rollNumber !== rollNumber);
+    savedStudents[selectedClass] = updatedStudents;
+    localStorage.setItem('students', JSON.stringify(savedStudents));
+
+    // Remove attendance records
+    const savedAttendance  = JOSN.parse(localStorage.getItem('attendanceData')) || [];
+    const updatedAttendance = savedAttendance.filter(
+        record => !(record.class === selectedClass && record.rollNumber === rollNumber)
+    );
+    localStorage.setItem('attendanceData', JSON.stringify(updatedAttendance));
+
+    // Remove color
+    const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
+if ( savedColors[selectedClass]) {
+    delete savedColors[selectedClass][rollNumber];
+    if(Object.keys(savedColors[selectedClass]).length === 0){
+        delete savedColors[selectedClass];
+    }
+    localStorage.setItem('colors', JSON.stringify(savedColors));
+}
+
+// Remove from UI
+listItem.remove();
+showSummary(selectedClass);
+showToast('Student removed successfully.', 'info');
+}

@@ -785,4 +785,14 @@ function markAttendance(status, listItem, selectedClass){
     // Save color
     saveColor(selectedClass, rollNumber, color);
 
+    //update attendance record
+    updatedAttendanceRecord(studentName, selectedClass, status, rollNumber);
+    showSummary(selectedClass);
+
+}
+
+function updatedAttendanceRecord(studentName, selectedClass, status, rollNumber){
+    const savedAttendaceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+    const existingRecordIndex = savedAttendanceData.findIndex
 }

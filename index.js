@@ -830,3 +830,332 @@ function getSavedColor(selectedClass, rollNumber) {
     const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
     return savedColors[selectedClass] ? savedColors[selectedClass][rollNumber] : null;
 }
+
+
+// ============================================
+//  SUMMARY
+// ============================================
+
+function showSummary(selectedClass) {
+    if (!selectedClass) {
+        document.getElementById('summarySection').style.display = 'none';
+        return;
+    }
+
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const filteredData = savedAttendanceData.filter(record => record.class === selectedClass);
+
+    const uniqueStudents = new Set(filteredData.map(r => r.rollNumber));
+    const totalStudents = uniqueStudents.size;
+
+    // Get total students from class list
+    const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+    const classStudents = savedStudents[selectedClass] || [];
+    const classTotal = classStudents.length;
+
+    const totalPresent = filteredData.filter(r => r.status === 'present').length;
+    const totalAbsent = filteredData.filter(r => r.status === 'absent').length;
+    const totalLeave = filteredData.filter(r => r.status === 'leave').length;
+
+    // Use class total if available, otherwise use unique count
+    const displayTotal = classTotal > 0 ? classTotal : totalStudents;
+
+    document.getElementById('totalStudents').textContent = displayTotal;
+    document.getElementById('totalPresent').textContent = totalPresent;
+    document.getElementById('totalAbsent').textContent = totalAbsent;
+    document.getElementById('totalLeave').textContent = totalLeave;
+
+    // Update progress
+    const presentPercent = displayTotal > 0 ? Math.round((totalPresent / displayTotal) * 100) : 0;
+    document.getElementById('attendanceProgress').style.width = presentPercent + '%';
+    document.getElementById('attendancePercent').textContent = `${presentPercent}% Present`;
+
+    document.getElementById('summarySection').style.display = 'block';
+}
+
+// ============================================
+//  SUBMIT ATTENDANCE
+// ============================================
+
+function submitAttendance() {
+    const classSelector = document.getElementById('classSelector');
+    const selectedClass = classSelector.value;
+
+    if (!selectedClass) {
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+
+    const studentsList = document.getElementById('studentsList');
+    const studentItems = studentsList.querySelectorAll('.student-item');
+
+    if (studentItems.length === 0) {
+        showToast('No students in this class.', 'warning');
+        return;
+    }
+
+    // Check if all students have attendance marked
+    let allMarked = true;
+    let unmarkedCount = 0;
+
+    studentItems.forEach(item => {
+        const hasStatus = item.querySelector('.status-btn.active');
+        if (!hasStatus) {
+            allMarked = false;
+            unmarkedCount++;
+        }
+    });
+
+    if (!allMarked) {
+        if (!confirm(`${unmarkedCount} student(s) have no attendance marked. Continue anyway?`)) {
+            return;
+        }
+    }
+
+    document.getElementById('summarySection').style.display = 'block';
+    document.getElementById('resultSection').style.display = 'block';
+
+    showAttendanceResult(selectedClass);
+    showToast('✅ Attendance submitted successfully!', 'success');
+}
+
+function showAttendanceResult(selectedClass) {
+    const resultSection = document.getElementById('resultSection');
+    if (!resultSection) return;
+
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const filteredData = savedAttendanceData.filter(record => record.class === selectedClass);
+
+    const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+    const classStudents = savedStudents[selectedClass] || [];
+    const totalStudents = classStudents.length || new Set(filteredData.map(r => r.rollNumber)).size;
+
+    const totalPresent = filteredData.filter(r => r.status === 'present').length;
+    const totalAbsent = filteredData.filter(r => r.status === 'absent').length;
+    const totalLeave = filteredData.filter(r => r.status === 'leave').length;
+
+    document.getElementById('attendanceDate').textContent = getCurrentDate();
+    document.getElementById('attendanceTime').textContent = getCurrentTime();
+    document.getElementById('attendanceClass').textContent = selectedClass;
+    document.getElementById('attendanceTotalStudents').textContent = totalStudents;
+    document.getElementById('attendancePresent').textContent = totalPresent;
+    document.getElementById('attendanceAbsent').textContent = totalAbsent;
+    document.getElementById('attendanceLeave').textContent = totalLeave;
+
+    resultSection.style.display = 'block';
+
+    // Scroll to result
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ============================================
+//  EXPORT FUNCTIONS
+// ============================================
+
+function exportToCSV() {
+    const selectedClass = document.getElementById('classSelector').value;
+    if (!selectedClass) {
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const filteredData = savedAttendanceData.filter(record => record.class === selectedClass);
+
+    if (filteredData.length === 0) {
+        showToast('No attendance data to export.', 'warning');
+        return;
+    }
+
+    let csv = 'Student Name,Roll Number,Status,Date,Class\n';
+    filteredData.forEach(record => {
+        csv += `"${record.name}","${record.rollNumber || 'N/A'}","${record.status}","${record.date}","${record.class}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `attendance_${selectedClass}_${getCurrentDate()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('📊 CSV exported successfully!', 'success');
+}
+
+function exportToPDF() {
+    const selectedClass = document.getElementById('classSelector').value;
+    if (!selectedClass) {
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+
+    if (typeof window.jspdf === 'undefined') {
+        showToast('PDF library not loaded. Please check your connection.', 'error');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4');
+
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const filteredData = savedAttendanceData.filter(record => record.class === selectedClass);
+
+    if (filteredData.length === 0) {
+        showToast('No attendance data to export.', 'warning');
+        return;
+    }
+
+    // Header
+    doc.setFontSize(20);
+    doc.text('Attendance Report', 20, 25);
+    doc.setFontSize(12);
+    doc.text(`Class: ${selectedClass}`, 20, 35);
+    doc.text(`Date: ${new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`, 20, 42);
+    doc.text(`Total Students: ${filteredData.length}`, 20, 49);
+
+    // Table headers
+    let y = 60;
+    const headers = ['#', 'Name', 'Roll No.', 'Status', 'Date'];
+    const colWidths = [12, 80, 30, 35, 35];
+    let x = 20;
+
+    doc.setFontSize(10);
+    doc.setDrawColor(0);
+    doc.setFillColor(52, 152, 219);
+    doc.rect(x, y - 5, colWidths.reduce((a, b) => a + b, 0), 8, 'F');
+    doc.setTextColor(255);
+
+    headers.forEach((h, i) => {
+        doc.text(h, x + 2, y);
+        x += colWidths[i];
+    });
+
+    doc.setTextColor(0);
+    y += 8;
+
+    filteredData.forEach((record, index) => {
+        if (y > 190) {
+            doc.addPage();
+            y = 20;
+            // Re-draw header on new page
+            doc.setFontSize(12);
+            doc.text(`Attendance Report - ${selectedClass} (continued)`, 20, y);
+            y += 10;
+            doc.setFontSize(10);
+        }
+
+        let cx = 20;
+        const rowData = [
+            String(index + 1),
+            record.name.substring(0, 20),
+            record.rollNumber || 'N/A',
+            record.status.charAt(0).toUpperCase() + record.status.slice(1),
+            record.date
+        ];
+
+        // Alternate row color
+        if (index % 2 === 0) {
+            doc.setFillColor(240, 248, 255);
+            doc.rect(cx, y - 4, colWidths.reduce((a, b) => a + b, 0), 7, 'F');
+        }
+
+        rowData.forEach((data, i) => {
+            doc.text(data, cx + 2, y);
+            cx += colWidths[i];
+        });
+
+        y += 8;
+    });
+
+    // Footer
+    const summary = filteredData.reduce((acc, r) => {
+        acc[r.status] = (acc[r.status] || 0) + 1;
+        return acc;
+    }, {});
+
+    y += 5;
+    doc.setFontSize(10);
+    doc.text(`Summary - Present: ${summary.present || 0} | Absent: ${summary.absent || 0} | Leave: ${summary.leave || 0}`, 20, y);
+
+    doc.save(`attendance_${selectedClass}_${getCurrentDate()}.pdf`);
+    showToast('📄 PDF exported successfully!', 'success');
+}
+
+// ============================================
+//  RESET ATTENDANCE
+// ============================================
+
+function resetAttendance() {
+    const selectedClass = document.getElementById('classSelector').value;
+    if (!selectedClass) {
+        showToast('Please select a class first.', 'warning');
+        return;
+    }
+
+    if (!confirm(`⚠️ Are you sure you want to reset attendance for "${selectedClass}"?\n\nThis will remove all attendance data for this class.`)) {
+        return;
+    }
+
+    // Remove attendance data
+    let savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    savedAttendanceData = savedAttendanceData.filter(record => record.class !== selectedClass);
+    localStorage.setItem('attendanceData', JSON.stringify(savedAttendanceData));
+
+    // Remove colors
+    let savedColors = JSON.parse(localStorage.getItem('colors')) || {};
+    delete savedColors[selectedClass];
+    localStorage.setItem('colors', JSON.stringify(savedColors));
+
+    // Reset UI
+    document.getElementById('resultSection').style.display = 'none';
+    showStudentsList();
+    showSummary(selectedClass);
+
+    showToast('🔄 Attendance reset successfully!', 'success');
+}
+
+// ============================================
+//  POPUP MANAGEMENT
+// ============================================
+
+function closePopup() {
+    document.querySelectorAll('.popup-overlay').forEach(popup => {
+        popup.classList.remove('active');
+    });
+}
+
+// Close popup on overlay click
+document.querySelectorAll('.popup-overlay').forEach(popup => {
+    popup.addEventListener('click', function (e) {
+        if (e.target === this) {
+            closePopup();
+        }
+    });
+});
+
+// Close popup on Escape key
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closePopup();
+    }
+});
+
+// ============================================
+//  IS ATTENDANCE SUBMITTED CHECK
+// ============================================
+
+function isAttendanceSubmittedForClass(selectedClass) {
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    return savedAttendanceData.some(record => record.class === selectedClass);
+}
+
+// make all functions available globally for HTML onclick
+
+window.toggleTheme = toggleTheme;
+window.showAddStudentForm = showAddStudentForm;
+window.showAddClassForm = showAddClassForm;
+window.addStudent = addStudent;
+

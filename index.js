@@ -764,3 +764,18 @@ listItem.remove();
 showSummary(selectedClass);
 showToast('Student removed successfully.', 'info');
 }
+
+// ATTENDACNE MANAGEMENT // 
+
+function markAttendance(status, listItem, selectedClass){
+    const newStudentName = listItem.querySelector('.student-name').textContent;
+    const rollNumber = listItem.getAttribute('data-roll-number');
+
+    //Update background
+    const color = getColorStatusMap()[status];
+    listItem.style.backgroundColor = color;
+    listItem.style.borderLeftColor = color;
+
+    // update active button
+
+}

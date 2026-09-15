@@ -1158,4 +1158,13 @@ window.toggleTheme = toggleTheme;
 window.showAddStudentForm = showAddStudentForm;
 window.showAddClassForm = showAddClassForm;
 window.addStudent = addStudent;
-
+window.addClass = addClass;
+window.closePopup = closePopup;
+window.submitAttendance = submitAttendance;
+window.exportToCSV = exportToCSV;
+window.exportToPDF = exportToPDF;
+window.resetAttendance = resetAttendance;
+window.showStudentsList = showStudentsList;
+window.editStudent = editStudent;
+window.deleteStudent = deleteStudent;
+window.markAttendance = markAttendance;

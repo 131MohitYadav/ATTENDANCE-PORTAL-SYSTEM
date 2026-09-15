@@ -817,3 +817,16 @@ function updatedAttendanceRecord(studentName, selectedClass, status, rollNumber)
 }
 
 
+function saveColor(selectedClass, rollNumber, color){
+    const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
+    if(!savedColors[selectedClass]) {
+        savedColors[selectedClass] = {};
+    }
+    savedColors[selectedClass][rollNumber] = color;
+    localStorage.setItem('colors', JSON.stringify(savedColors));
+}
+
+function getSavedColor(selectedClass, rollNumber) {
+    const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
+    return savedColors[selectedClass] ? savedColors[selectedClass][rollNumber] : null;
+}

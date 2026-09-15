@@ -792,7 +792,28 @@ function markAttendance(status, listItem, selectedClass){
 }
 
 function updatedAttendanceRecord(studentName, selectedClass, status, rollNumber){
-    const savedAttendaceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
 
-    const existingRecordIndex = savedAttendanceData.findIndex
+    const existingRecordIndex = savedAttendanceData.findIndex(
+        record => record.rollNumber === rollNumber && record.class === selectedClass);
+
+
+        const record = {
+            name : studentName, 
+            rollNumber: rollNumber,
+            class: selectedClass,
+            status, status,
+            date: getCurrentDate(),
+            timestamp: new Date().toISOString()
+        };
+
+        if(existingRecordIndex !== -1){
+            savedAttendanceData[existingRecordIndex] = record;
+        }else{
+            savedAttendanceData.push(record);
+        }
+
+        localStorage.setItem('attendanceData', JSON.stringify(savedAttendanceData));
 }
+
+

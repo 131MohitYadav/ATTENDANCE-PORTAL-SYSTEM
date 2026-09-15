@@ -777,5 +777,12 @@ function markAttendance(status, listItem, selectedClass){
     listItem.style.borderLeftColor = color;
 
     // update active button
+    const actions = listItem.querySelector('.student-actions');
+    actions.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = actions.querySelector(`.${status}`);
+    if (acitveBtn) activeBtn.classList.add('active')};
+
+
+
 
 }

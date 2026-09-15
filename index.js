@@ -743,7 +743,7 @@ function deleteStudent(listItem, rollNumber){
     localStorage.setItem('students', JSON.stringify(savedStudents));
 
     // Remove attendance records
-    const savedAttendance  = JOSN.parse(localStorage.getItem('attendanceData')) || [];
+    const savedAttendance  = JSON.parse(localStorage.getItem('attendanceData')) || [];
     const updatedAttendance = savedAttendance.filter(
         record => !(record.class === selectedClass && record.rollNumber === rollNumber)
     );
@@ -765,7 +765,7 @@ showSummary(selectedClass);
 showToast('Student removed successfully.', 'info');
 }
 
-// ATTENDACNE MANAGEMENT // 
+// Attendance 
 
 function markAttendance(status, listItem, selectedClass){
     const newStudentName = listItem.querySelector('.student-name').textContent;
@@ -780,9 +780,9 @@ function markAttendance(status, listItem, selectedClass){
     const actions = listItem.querySelector('.student-actions');
     actions.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = actions.querySelector(`.${status}`);
-    if (acitveBtn) activeBtn.classList.add('active')};
+    if (activeBtn) activeBtn.classList.add('active');
 
-
-
+    // Save color
+    saveColor(selectedClass, rollNumber, color);
 
 }

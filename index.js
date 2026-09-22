@@ -8,8 +8,23 @@ document.addEventListener("DOMContentLoaded", function () {
     updateDateTime();
 
     setInterval(updateDateTime, 1000);
-});
 
+    // Close popup on overlay click
+    document.querySelectorAll('.popup-overlay').forEach(popup => {
+        popup.addEventListener('click', function (e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+    });
+
+    // Close popup on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closePopup();
+        }
+    });
+});
 
 // ================================
 // THEME MANAGEMENT
@@ -24,7 +39,6 @@ function toggleTheme() {
     updateThemeIcon();
 }
 
-
 function loadThemePreference() {
     const theme = localStorage.getItem("theme");
 
@@ -35,17 +49,14 @@ function loadThemePreference() {
     updateThemeIcon();
 }
 
-
 function updateThemeIcon() {
     const btn = document.querySelector(".theme-toggle");
 
     if (btn) {
         const isDark = document.body.classList.contains("dark-mode");
-
         btn.innerHTML = isDark ? "☀️ Light" : "🌙 Dark";
     }
 }
-
 
 // ================================
 // DATE AND TIME
@@ -75,19 +86,22 @@ function updateDateTime() {
     }
 }
 
-
 function getCurrentDate() {
     const now = new Date();
-
     const year = now.getFullYear();
-
     const month = String(now.getMonth() + 1).padStart(2, "0");
-
     const day = String(now.getDate()).padStart(2, "0");
-
     return `${year}-${month}-${day}`;
 }
 
+function getCurrentTime() {
+    const now = new Date();
+    return now.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+}
 
 // ================================
 // TOAST NOTIFICATION
@@ -95,9 +109,7 @@ function getCurrentDate() {
 function showToast(message, type = "info") {
     const container = document.querySelector(".toast-container");
 
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
     const toast = document.createElement("div");
 
@@ -108,62 +120,44 @@ function showToast(message, type = "info") {
         warning: "toast-warning"
     };
 
-    toast.className =
-        `toast ${typeClasses[type] || typeClasses.info}`;
-
+    toast.className = `toast ${typeClasses[type] || typeClasses.info}`;
     toast.textContent = message;
 
     container.appendChild(toast);
 
     setTimeout(function () {
         toast.classList.add("toast-exit");
-
         setTimeout(function () {
             toast.remove();
         }, 300);
-
     }, 3000);
 }
-
 
 // ================================
 // CLASS MANAGEMENT
 // ================================
 function populateClasses() {
-    const savedClasses =
-        JSON.parse(localStorage.getItem("classes")) || [];
+    const savedClasses = JSON.parse(localStorage.getItem("classes")) || [];
+    const classSelector = document.getElementById("classSelector");
 
-    const classSelector =
-        document.getElementById("classSelector");
+    if (!classSelector) return;
 
-    if (!classSelector) {
-        return;
-    }
-
-    classSelector.innerHTML =
-        '<option value="">-- Select a Class --</option>';
+    classSelector.innerHTML = '<option value="">-- Select a Class --</option>';
 
     savedClasses.forEach(function (className) {
         const option = document.createElement("option");
-
         option.value = className;
         option.textContent = className;
-
         classSelector.appendChild(option);
     });
 }
 
-
 function saveClasses() {
-    const classSelector =
-        document.getElementById("classSelector");
+    const classSelector = document.getElementById("classSelector");
 
-    if (!classSelector) {
-        return;
-    }
+    if (!classSelector) return;
 
-    const options =
-        Array.from(classSelector.options);
+    const options = Array.from(classSelector.options);
 
     const savedClasses = options
         .filter(function (option) {
@@ -173,497 +167,273 @@ function saveClasses() {
             return option.value;
         });
 
-    localStorage.setItem(
-        "classes",
-        JSON.stringify(savedClasses)
-    );
+    localStorage.setItem("classes", JSON.stringify(savedClasses));
 }
 
-
 function showAddClassForm() {
-    const popup =
-        document.getElementById("addClassPopup");
+    const popup = document.getElementById("addClassPopup");
+    const input = document.getElementById("newClassName");
 
-    const input =
-        document.getElementById("newClassName");
-
-    if (!popup || !input) {
-        return;
-    }
+    if (!popup || !input) return;
 
     popup.classList.add("active");
-
     input.value = "";
-
     input.focus();
 }
 
-
 function addClass() {
-    const input =
-        document.getElementById("newClassName");
+    const input = document.getElementById("newClassName");
+    const classSelector = document.getElementById("classSelector");
 
-    const classSelector =
-        document.getElementById("classSelector");
+    if (!input || !classSelector) return;
 
-    if (!input || !classSelector) {
-        return;
-    }
-
-    const newClassName =
-        input.value.trim();
+    const newClassName = input.value.trim();
 
     if (!newClassName) {
-        showToast(
-            "Please enter a class name.",
-            "error"
-        );
-
+        showToast("Please enter a class name.", "error");
         return;
     }
 
-    // Check duplicate class
-    const existingClasses =
-        Array.from(classSelector.options)
-            .map(function (option) {
-                return option.value;
-            });
+    const existingClasses = Array.from(classSelector.options).map(function (option) {
+        return option.value;
+    });
 
     if (existingClasses.includes(newClassName)) {
-        showToast(
-            "Class already exists!",
-            "warning"
-        );
-
+        showToast("Class already exists!", "warning");
         return;
     }
 
-    // Create new option
-    const option =
-        document.createElement("option");
-
+    const option = document.createElement("option");
     option.value = newClassName;
     option.textContent = newClassName;
-
     classSelector.appendChild(option);
 
-    // Save class
     saveClasses();
-
-    // Select newly added class
     classSelector.value = newClassName;
-
     closePopup();
 
-    showToast(
-        `Class "${newClassName}" added successfully!`,
-        "success"
-    );
-
+    showToast(`Class "${newClassName}" added successfully!`, "success");
     showStudentsList();
 }
-
 
 // ================================
 // STUDENT MANAGEMENT
 // ================================
 function showAddStudentForm() {
-    const classSelector =
-        document.getElementById("classSelector");
+    const classSelector = document.getElementById("classSelector");
 
-    if (!classSelector) {
-        return;
-    }
+    if (!classSelector) return;
 
     if (!classSelector.value) {
-        showToast(
-            "Please select a class first.",
-            "warning"
-        );
-
+        showToast("Please select a class first.", "warning");
         return;
     }
 
-    const popup =
-        document.getElementById("addStudentPopup");
+    const popup = document.getElementById("addStudentPopup");
+    const nameInput = document.getElementById("newStudentName");
+    const rollInput = document.getElementById("newStudentRoll");
 
-    const nameInput =
-        document.getElementById("newStudentName");
-
-    const rollInput =
-        document.getElementById("newStudentRoll");
-
-    if (!popup || !nameInput || !rollInput) {
-        return;
-    }
+    if (!popup || !nameInput || !rollInput) return;
 
     popup.classList.add("active");
-
-    // Clear inputs
     nameInput.value = "";
     rollInput.value = "";
-
     nameInput.focus();
 }
 
-
 function addStudent() {
-    const nameInput =
-        document.getElementById("newStudentName");
+    const nameInput = document.getElementById("newStudentName");
+    const rollInput = document.getElementById("newStudentRoll");
 
-    const rollInput =
-        document.getElementById("newStudentRoll");
+    if (!nameInput || !rollInput) return;
 
-    if (!nameInput || !rollInput) {
-        return;
-    }
-
-    const name =
-        nameInput.value.trim();
-
-    const roll =
-        rollInput.value.trim();
+    const name = nameInput.value.trim();
+    const roll = rollInput.value.trim();
 
     if (!name || !roll) {
-        showToast(
-            "Please provide both name and roll number.",
-            "error"
-        );
-
+        showToast("Please provide both name and roll number.", "error");
         return;
     }
 
-    const classSelector =
-        document.getElementById("classSelector");
+    const classSelector = document.getElementById("classSelector");
 
-    if (!classSelector) {
-        return;
-    }
+    if (!classSelector) return;
 
-    const selectedClass =
-        classSelector.value;
+    const selectedClass = classSelector.value;
 
     if (!selectedClass) {
-        showToast(
-            "Please select a class.",
-            "error"
-        );
-
+        showToast("Please select a class.", "error");
         return;
     }
 
+    // Check duplicate roll number
+    const savedStudents = JSON.parse(localStorage.getItem("students")) || {};
+    const existingStudents = savedStudents[selectedClass] || [];
 
-    // ================================
-    // CHECK DUPLICATE ROLL NUMBER
-    // ================================
-    const savedStudents =
-        JSON.parse(
-            localStorage.getItem("students")
-        ) || {};
-
-    const existingStudents =
-        savedStudents[selectedClass] || [];
-
-    if (
-        existingStudents.some(function (student) {
-            return student.rollNumber === roll;
-        })
-    ) {
-        showToast(
-            `Roll number "${roll}" already exists in this class.`,
-            "error"
-        );
-
+    if (existingStudents.some(function (student) {
+        return student.rollNumber === roll;
+    })) {
+        showToast(`Roll number "${roll}" already exists in this class.`, "error");
         return;
     }
 
+    const studentsList = document.getElementById("studentsList");
 
-    // ================================
-    // ADD STUDENT TO UI
-    // ================================
-    const studentsList =
-        document.getElementById("studentsList");
+    if (!studentsList) return;
 
-    if (!studentsList) {
-        return;
+    // Clear empty state if present
+    const emptyState = studentsList.querySelector('.empty-state');
+    if (emptyState) {
+        studentsList.innerHTML = '';
     }
 
-    const listItem =
-        createStudentListItem(
-            name,
-            roll,
-            selectedClass
-        );
-
+    const listItem = createStudentListItem(name, roll, selectedClass);
     studentsList.appendChild(listItem);
 
-
-    // ================================
-    // SAVE STUDENT
-    // ================================
     saveStudentsList(selectedClass);
-
     showSummary(selectedClass);
-
     closePopup();
 
-    showToast(
-        `Student "${name}" added successfully!`,
-        "success"
-    );
+    showToast(`Student "${name}" added successfully!`, "success");
 
-
-    // Clear inputs
     nameInput.value = "";
     rollInput.value = "";
 }
-
 
 // ================================
 // CREATE STUDENT LIST ITEM
 // ================================
-function createStudentListItem(
-    name,
-    rollNumber,
-    selectedClass
-) {
-    const listItem =
-        document.createElement("li");
+function createStudentListItem(name, rollNumber, selectedClass) {
+    const listItem = document.createElement("li");
+    listItem.className = "student-item";
+    listItem.setAttribute("data-roll-number", rollNumber);
 
-    listItem.className =
-        "student-item";
-
-    listItem.setAttribute(
-        "data-roll-number",
-        rollNumber
-    );
-
-
-    // ================================
-    // STUDENT INFORMATION
-    // ================================
-    const infoDiv =
-        document.createElement("div");
-
-    infoDiv.className =
-        "student-info";
-
+    // Student info
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "student-info";
     infoDiv.innerHTML = `
-        <span class="student-name">
-            ${escapeHtml(name)}
-        </span>
-
-        <span class="student-roll">
-            #${escapeHtml(rollNumber)}
-        </span>
+        <span class="student-name">${escapeHtml(name)}</span>
+        <span class="student-roll">#${escapeHtml(rollNumber)}</span>
     `;
-
     listItem.appendChild(infoDiv);
 
+    // Actions
+    const actionsDiv = document.createElement("div");
+    actionsDiv.className = "student-actions";
 
-    // ================================
-    // ACTIONS
-    // ================================
-    const actionsDiv =
-        document.createElement("div");
-
-    actionsDiv.className =
-        "student-actions";
-
-
-    // ================================
-    // ATTENDANCE STATUS
-    // ================================
     const statuses = [
-        {
-            key: "present",
-            label: "P"
-        },
-        {
-            key: "absent",
-            label: "A"
-        },
-        {
-            key: "leave",
-            label: "L"
-        }
+        { key: "present", label: "P" },
+        { key: "absent", label: "A" },
+        { key: "leave", label: "L" }
     ];
 
-
     statuses.forEach(function (status) {
-
-        const btn =
-            document.createElement("button");
-
+        const btn = document.createElement("button");
         btn.type = "button";
+        btn.className = `status-btn ${status.key}`;
+        btn.textContent = status.label;
+        btn.title = status.key.charAt(0).toUpperCase() + status.key.slice(1);
 
-        btn.className =
-            `status-btn ${status.key}`;
-
-        btn.textContent =
-            status.label;
-
-        btn.title =
-            status.key.charAt(0).toUpperCase() +
-            status.key.slice(1);
-
-
-        // Attendance
         btn.onclick = function () {
-            markAttendance(
-                status.key,
-                listItem,
-                selectedClass
-            );
+            markAttendance(status.key, listItem, selectedClass);
         };
 
         actionsDiv.appendChild(btn);
     });
 
-
-    // ================================
-    // EDIT BUTTON
-    // ================================
-    const editBtn =
-        document.createElement("button");
-
+    // Edit button
+    const editBtn = document.createElement("button");
     editBtn.type = "button";
-
-    editBtn.className =
-        "status-btn edit-btn";
-
+    editBtn.className = "status-btn edit-btn";
     editBtn.textContent = "✏️";
-
-    editBtn.title =
-        "Edit Student";
-
+    editBtn.title = "Edit Student";
     editBtn.onclick = function () {
-        editStudent(
-            listItem,
-            rollNumber
-        );
+        editStudent(listItem, rollNumber);
     };
-
     actionsDiv.appendChild(editBtn);
 
-
-    // ================================
-    // DELETE BUTTON
-    // ================================
-    const delBtn =
-        document.createElement("button");
-
+    // Delete button
+    const delBtn = document.createElement("button");
     delBtn.type = "button";
-
-    delBtn.className =
-        "status-btn delete-btn";
-
+    delBtn.className = "status-btn delete-btn";
     delBtn.textContent = "🗑️";
-
-    delBtn.title =
-        "Delete Student";
-
+    delBtn.title = "Delete Student";
     delBtn.onclick = function () {
-        deleteStudent(
-            listItem,
-            rollNumber
-        );
+        deleteStudent(listItem, rollNumber);
     };
-
     actionsDiv.appendChild(delBtn);
 
-
-    // Add actions
     listItem.appendChild(actionsDiv);
 
-
-    // ================================
-    // RESTORE SAVED COLOR
-    // ================================
-    const savedColor =
-        getSavedColor(
-            selectedClass,
-            rollNumber
-        );
-
+    // Restore saved color
+    const savedColor = getSavedColor(selectedClass, rollNumber);
     if (savedColor) {
+        listItem.style.backgroundColor = savedColor;
+        listItem.style.borderLeftColor = savedColor;
 
-        listItem.style.backgroundColor =
-            savedColor;
-
-        const colorStatusMap =
-            getColorStatusMap();
-
-        const statusKey =
-            Object.keys(colorStatusMap)
-                .find(function (key) {
-                    return colorStatusMap[key] === savedColor;
-                });
+        const colorStatusMap = getColorStatusMap();
+        const statusKey = Object.keys(colorStatusMap).find(function (key) {
+            return colorStatusMap[key] === savedColor;
+        });
 
         if (statusKey) {
-
-            const btn =
-                actionsDiv.querySelector(
-                    `.${statusKey}`
-                );
-
-            if (btn) {
-                btn.classList.add("active");
-            }
+            const btn = actionsDiv.querySelector(`.${statusKey}`);
+            if (btn) btn.classList.add("active");
         }
     }
 
-
-    return listItem ;
+    return listItem;
 }
 
-function getColorStatusMap(){
+function getColorStatusMap() {
     return {
         present: '#2ecc71',
-        absent:  '#e74c3c',
+        absent: '#e74c3c',
         leave: '#f39c12'
     };
 }
-function escapeHtml(text){
+
+function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-
 }
 
-function showStudentsList(){
+function showStudentsList() {
     const classSelector = document.getElementById('classSelector');
     const selectedClass = classSelector.value;
 
-     
-    if(!selectedClass){
-        document.getElementById('studentsList').innerHTML = `
-        <div class = "empty-state">
-        <div class =empty-icons">📚</div>
-        <h4> No Class Selected</h4>
-        <p>Please select a class to view students.</p>
-        </div>
+    const studentsList = document.getElementById('studentsList');
+    const summarySection = document.getElementById('summarySection');
+    const resultSection = document.getElementById('resultSection');
+
+    if (!selectedClass) {
+        studentsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <h4>No Class Selected</h4>
+                <p>Please select a class to view students.</p>
+            </div>
         `;
-        document.getElementById('summarySection').style.display = 'none';
-        document.getElementById('resultSection').style.display = 'none';
+        summarySection.style.display = 'none';
+        resultSection.style.display = 'none';
         return;
     }
 
-    const studentsList = document.getElementById('studentList');
     studentsList.innerHTML = '';
 
     const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
     const selectedClassStudents = savedStudents[selectedClass] || [];
 
-    if( selectedClassStudents.length === 0){
+    if (selectedClassStudents.length === 0) {
         studentsList.innerHTML = `
-        <div class = "empty-state">
-        <div class = "empty-icon">👤</div>
-        <h4> No Students</h4>
-        <p>Add students to this class using the "Add Student" button.</p>
-        </div>
+            <div class="empty-state">
+                <div class="empty-icon">👤</div>
+                <h4>No Students</h4>
+                <p>Add students to this class using the "Add Student" button.</p>
+            </div>
         `;
-    } else{
+    } else {
         selectedClassStudents.forEach(student => {
             const listItem = createStudentListItem(student.name, student.rollNumber, selectedClass);
             studentsList.appendChild(listItem);
@@ -671,20 +441,20 @@ function showStudentsList(){
     }
 
     // Check if attendance is submitted
-    const resultSection = document.getElementById('resultSection');
     const isAttendanceSubmitted = resultSection.style.display === 'block';
 
-    if(isAttendanceSubmitted){
+    if (isAttendanceSubmitted) {
         showAttendanceResult(selectedClass);
-    } else{
+    } else {
         showSummary(selectedClass);
     }
 }
 
-function saveStudentsList(selectedClass){
-    const studentList = document.getElementById('studentsList');
-    const studentItems = studentList.querySelector('.student-item');
+function saveStudentsList(selectedClass) {
+    const studentsList = document.getElementById('studentsList');
+    const studentItems = studentsList.querySelectorAll('.student-item');
     const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+
     const students = Array.from(studentItems).map(item => ({
         name: item.querySelector('.student-name').textContent,
         rollNumber: item.getAttribute('data-roll-number')
@@ -694,25 +464,24 @@ function saveStudentsList(selectedClass){
     localStorage.setItem('students', JSON.stringify(savedStudents));
 }
 
-// STUDENT EDIT / DELETE 
-
-function editStudent(listItem, rollNumber){
+// ================================
+// STUDENT EDIT / DELETE
+// ================================
+function editStudent(listItem, rollNumber) {
     const nameSpan = listItem.querySelector('.student-name');
     const currentName = nameSpan.textContent;
-    const newName = prompt('Edit Student Name:, currentName');
+    const newName = prompt('Edit Student Name:', currentName);
 
-
-    if (newName !== null && newName.trim() !== ''){
+    if (newName !== null && newName.trim() !== '') {
         const trimmedName = newName.trim();
         nameSpan.textContent = trimmedName;
 
-        // Update in localStorage
         const selectedClass = document.getElementById('classSelector').value;
-        const savedStudents =   JSON.parse(localStorage.getItem('students')) || {};
+        const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
+        const students = savedStudents[selectedClass] || [];
         const studentIndex = students.findIndex(s => s.rollNumber === rollNumber);
 
-
-        if (studentIndex !== -1){
+        if (studentIndex !== -1) {
             students[studentIndex].name = trimmedName;
             savedStudents[selectedClass] = students;
             localStorage.setItem('students', JSON.stringify(savedStudents));
@@ -720,18 +489,19 @@ function editStudent(listItem, rollNumber){
             // Update attendance records
             const savedAttendance = JSON.parse(localStorage.getItem('attendanceData')) || [];
             savedAttendance.forEach(record => {
-                if (record.rollNumber === rollNumber && record.class === selectedClass){
+                if (record.rollNumber === rollNumber && record.class === selectedClass) {
                     record.name = trimmedName;
                 }
             });
             localStorage.setItem('attendanceData', JSON.stringify(savedAttendance));
+
             showToast('Student name updated!', 'success');
         }
     }
 }
 
-function deleteStudent(listItem, rollNumber){
-    if(!confirm(` Are you sure you want to remove this student?`)) return;
+function deleteStudent(listItem, rollNumber) {
+    if (!confirm('Are you sure you want to remove this student?')) return;
 
     const selectedClass = document.getElementById('classSelector').value;
 
@@ -743,7 +513,7 @@ function deleteStudent(listItem, rollNumber){
     localStorage.setItem('students', JSON.stringify(savedStudents));
 
     // Remove attendance records
-    const savedAttendance  = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    const savedAttendance = JSON.parse(localStorage.getItem('attendanceData')) || [];
     const updatedAttendance = savedAttendance.filter(
         record => !(record.class === selectedClass && record.rollNumber === rollNumber)
     );
@@ -751,32 +521,46 @@ function deleteStudent(listItem, rollNumber){
 
     // Remove color
     const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
-if ( savedColors[selectedClass]) {
-    delete savedColors[selectedClass][rollNumber];
-    if(Object.keys(savedColors[selectedClass]).length === 0){
-        delete savedColors[selectedClass];
+    if (savedColors[selectedClass] && savedColors[selectedClass][rollNumber]) {
+        delete savedColors[selectedClass][rollNumber];
+        if (Object.keys(savedColors[selectedClass]).length === 0) {
+            delete savedColors[selectedClass];
+        }
+        localStorage.setItem('colors', JSON.stringify(savedColors));
     }
-    localStorage.setItem('colors', JSON.stringify(savedColors));
+
+    // Remove from UI
+    listItem.remove();
+
+    // Show empty state if no students left
+    const studentsList = document.getElementById('studentsList');
+    if (studentsList.querySelectorAll('.student-item').length === 0) {
+        studentsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">👤</div>
+                <h4>No Students</h4>
+                <p>Add students to this class using the "Add Student" button.</p>
+            </div>
+        `;
+    }
+
+    showSummary(selectedClass);
+    showToast('Student removed successfully.', 'info');
 }
 
-// Remove from UI
-listItem.remove();
-showSummary(selectedClass);
-showToast('Student removed successfully.', 'info');
-}
-
-// Attendance 
-
-function markAttendance(status, listItem, selectedClass){
-    const newStudentName = listItem.querySelector('.student-name').textContent;
+// ================================
+// ATTENDANCE MARKING
+// ================================
+function markAttendance(status, listItem, selectedClass) {
+    const studentName = listItem.querySelector('.student-name').textContent;
     const rollNumber = listItem.getAttribute('data-roll-number');
 
-    //Update background
+    // Update background
     const color = getColorStatusMap()[status];
     listItem.style.backgroundColor = color;
     listItem.style.borderLeftColor = color;
 
-    // update active button
+    // Update active button
     const actions = listItem.querySelector('.student-actions');
     actions.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = actions.querySelector(`.${status}`);
@@ -785,41 +569,39 @@ function markAttendance(status, listItem, selectedClass){
     // Save color
     saveColor(selectedClass, rollNumber, color);
 
-    //update attendance record
-    updatedAttendanceRecord(studentName, selectedClass, status, rollNumber);
+    // Update attendance record
+    updateAttendanceRecord(studentName, selectedClass, status, rollNumber);
     showSummary(selectedClass);
-
 }
 
-function updatedAttendanceRecord(studentName, selectedClass, status, rollNumber){
+function updateAttendanceRecord(studentName, selectedClass, status, rollNumber) {
     const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
 
     const existingRecordIndex = savedAttendanceData.findIndex(
-        record => record.rollNumber === rollNumber && record.class === selectedClass);
+        record => record.rollNumber === rollNumber && record.class === selectedClass
+    );
 
+    const record = {
+        name: studentName,
+        rollNumber: rollNumber,
+        class: selectedClass,
+        status: status,
+        date: getCurrentDate(),
+        timestamp: new Date().toISOString()
+    };
 
-        const record = {
-            name : studentName, 
-            rollNumber: rollNumber,
-            class: selectedClass,
-            status, status,
-            date: getCurrentDate(),
-            timestamp: new Date().toISOString()
-        };
+    if (existingRecordIndex !== -1) {
+        savedAttendanceData[existingRecordIndex] = record;
+    } else {
+        savedAttendanceData.push(record);
+    }
 
-        if(existingRecordIndex !== -1){
-            savedAttendanceData[existingRecordIndex] = record;
-        }else{
-            savedAttendanceData.push(record);
-        }
-
-        localStorage.setItem('attendanceData', JSON.stringify(savedAttendanceData));
+    localStorage.setItem('attendanceData', JSON.stringify(savedAttendanceData));
 }
 
-
-function saveColor(selectedClass, rollNumber, color){
+function saveColor(selectedClass, rollNumber, color) {
     const savedColors = JSON.parse(localStorage.getItem('colors')) || {};
-    if(!savedColors[selectedClass]) {
+    if (!savedColors[selectedClass]) {
         savedColors[selectedClass] = {};
     }
     savedColors[selectedClass][rollNumber] = color;
@@ -831,24 +613,20 @@ function getSavedColor(selectedClass, rollNumber) {
     return savedColors[selectedClass] ? savedColors[selectedClass][rollNumber] : null;
 }
 
-
-// ============================================
-//  SUMMARY
-// ============================================
-
+// ================================
+// SUMMARY
+// ================================
 function showSummary(selectedClass) {
+    const summarySection = document.getElementById('summarySection');
+
     if (!selectedClass) {
-        document.getElementById('summarySection').style.display = 'none';
+        summarySection.style.display = 'none';
         return;
     }
 
     const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
     const filteredData = savedAttendanceData.filter(record => record.class === selectedClass);
 
-    const uniqueStudents = new Set(filteredData.map(r => r.rollNumber));
-    const totalStudents = uniqueStudents.size;
-
-    // Get total students from class list
     const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
     const classStudents = savedStudents[selectedClass] || [];
     const classTotal = classStudents.length;
@@ -857,26 +635,23 @@ function showSummary(selectedClass) {
     const totalAbsent = filteredData.filter(r => r.status === 'absent').length;
     const totalLeave = filteredData.filter(r => r.status === 'leave').length;
 
-    // Use class total if available, otherwise use unique count
-    const displayTotal = classTotal > 0 ? classTotal : totalStudents;
+    const displayTotal = classTotal;
 
     document.getElementById('totalStudents').textContent = displayTotal;
     document.getElementById('totalPresent').textContent = totalPresent;
     document.getElementById('totalAbsent').textContent = totalAbsent;
     document.getElementById('totalLeave').textContent = totalLeave;
 
-    // Update progress
     const presentPercent = displayTotal > 0 ? Math.round((totalPresent / displayTotal) * 100) : 0;
     document.getElementById('attendanceProgress').style.width = presentPercent + '%';
     document.getElementById('attendancePercent').textContent = `${presentPercent}% Present`;
 
-    document.getElementById('summarySection').style.display = 'block';
+    summarySection.style.display = 'block';
 }
 
-// ============================================
-//  SUBMIT ATTENDANCE
-// ============================================
-
+// ================================
+// SUBMIT ATTENDANCE
+// ================================
 function submitAttendance() {
     const classSelector = document.getElementById('classSelector');
     const selectedClass = classSelector.value;
@@ -894,7 +669,6 @@ function submitAttendance() {
         return;
     }
 
-    // Check if all students have attendance marked
     let allMarked = true;
     let unmarkedCount = 0;
 
@@ -928,7 +702,7 @@ function showAttendanceResult(selectedClass) {
 
     const savedStudents = JSON.parse(localStorage.getItem('students')) || {};
     const classStudents = savedStudents[selectedClass] || [];
-    const totalStudents = classStudents.length || new Set(filteredData.map(r => r.rollNumber)).size;
+    const totalStudents = classStudents.length;
 
     const totalPresent = filteredData.filter(r => r.status === 'present').length;
     const totalAbsent = filteredData.filter(r => r.status === 'absent').length;
@@ -943,15 +717,12 @@ function showAttendanceResult(selectedClass) {
     document.getElementById('attendanceLeave').textContent = totalLeave;
 
     resultSection.style.display = 'block';
-
-    // Scroll to result
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// ============================================
-//  EXPORT FUNCTIONS
-// ============================================
-
+// ================================
+// EXPORT FUNCTIONS
+// ================================
 function exportToCSV() {
     const selectedClass = document.getElementById('classSelector').value;
     if (!selectedClass) {
@@ -1040,7 +811,6 @@ function exportToPDF() {
         if (y > 190) {
             doc.addPage();
             y = 20;
-            // Re-draw header on new page
             doc.setFontSize(12);
             doc.text(`Attendance Report - ${selectedClass} (continued)`, 20, y);
             y += 10;
@@ -1056,7 +826,6 @@ function exportToPDF() {
             record.date
         ];
 
-        // Alternate row color
         if (index % 2 === 0) {
             doc.setFillColor(240, 248, 255);
             doc.rect(cx, y - 4, colWidths.reduce((a, b) => a + b, 0), 7, 'F');
@@ -1084,10 +853,9 @@ function exportToPDF() {
     showToast('📄 PDF exported successfully!', 'success');
 }
 
-// ============================================
-//  RESET ATTENDANCE
-// ============================================
-
+// ================================
+// RESET ATTENDANCE
+// ================================
 function resetAttendance() {
     const selectedClass = document.getElementById('classSelector').value;
     if (!selectedClass) {
@@ -1117,43 +885,18 @@ function resetAttendance() {
     showToast('🔄 Attendance reset successfully!', 'success');
 }
 
-// ============================================
-//  POPUP MANAGEMENT
-// ============================================
-
+// ================================
+// POPUP MANAGEMENT
+// ================================
 function closePopup() {
     document.querySelectorAll('.popup-overlay').forEach(popup => {
         popup.classList.remove('active');
     });
 }
 
-// Close popup on overlay click
-document.querySelectorAll('.popup-overlay').forEach(popup => {
-    popup.addEventListener('click', function (e) {
-        if (e.target === this) {
-            closePopup();
-        }
-    });
-});
-
-// Close popup on Escape key
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        closePopup();
-    }
-});
-
-// ============================================
-//  IS ATTENDANCE SUBMITTED CHECK
-// ============================================
-
-function isAttendanceSubmittedForClass(selectedClass) {
-    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
-    return savedAttendanceData.some(record => record.class === selectedClass);
-}
-
-// make all functions available globally for HTML onclick
-
+// ================================
+// GLOBAL EXPORTS
+// ================================
 window.toggleTheme = toggleTheme;
 window.showAddStudentForm = showAddStudentForm;
 window.showAddClassForm = showAddClassForm;

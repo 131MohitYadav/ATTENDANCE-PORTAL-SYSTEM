@@ -446,6 +446,13 @@ function showStudentsList() {
    //  Recalculate summary for the NEW Class // 
    showSummary(selectedClass);
 
+   // show the current class 
+
+   const isResultVisible = resultSection.style.display === 'block';
+   if(isResultVisible) {
+    showAttendanceResult(selectedClass);
+   }
+}
 
 function saveStudentsList(selectedClass) {
     const studentsList = document.getElementById('studentsList');

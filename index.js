@@ -443,15 +443,8 @@ function showStudentsList() {
         });
     }
 
-    // Check if attendance is submitted
-    const isAttendanceSubmitted = resultSection.style.display === 'block';
-
-    if (isAttendanceSubmitted) {
-        showAttendanceResult(selectedClass);
-    } else {
-        showSummary(selectedClass);
-    }
-}
+   //  Recalculate summary for the NEW Class // 
+   
 
 function saveStudentsList(selectedClass) {
     const studentsList = document.getElementById('studentsList');

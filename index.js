@@ -435,7 +435,10 @@ function showStudentsList() {
         `;
     } else {
         selectedClassStudents.forEach(student => {
-            const listItem = createStudentListItem(student.name, student.rollNumber, selectedClass);
+            const listItem = createStudentListItem(
+                student.name, 
+                student.rollNumber,
+                 selectedClass);
             studentsList.appendChild(listItem);
         });
     }

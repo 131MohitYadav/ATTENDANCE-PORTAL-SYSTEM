@@ -444,7 +444,8 @@ function showStudentsList() {
     }
 
    //  Recalculate summary for the NEW Class // 
-   
+   showSummary(selectedClass);
+
 
 function saveStudentsList(selectedClass) {
     const studentsList = document.getElementById('studentsList');

@@ -274,9 +274,21 @@
                             </button>
                         </div>
 
-                        
+                        <input type="text" id="signupCaptchaInput" placeholder="Answer" inputmode="numeric">
                     </div>
                  </div>
+
+
+                 <div class="popup-actions">
+                    <button class="btn btn-primary" onclick="handleSignup()">Register</button>
+                    <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
+                 </div>
+
+
+                 <p class="auth-switch">
+                    Already registred?
+                    <a href="javascript:void(0)" onclick="switchToLogin()">Login here</a>
+                 </p>
 
 
 

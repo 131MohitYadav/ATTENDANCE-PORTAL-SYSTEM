@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="index.css">
     </head>
 
-    <body>
+    <div>
         <!-- NAVIGATION BAR -->
         <nav class="navbar">
             <div class="navbar-brand">
@@ -321,16 +321,29 @@
                 <label>Security Check</label>
                 <div class="captcha-box">
                     <div class="captcha-question">
-                        
-                    </div>
+                        <span id="loginCapthaText">-- + --</span>
+                        <button type="button" class="captcha-refresh" onclick="generateLoginCaptcha()" title="Refresh">🔄</button>
+                        </div>
+<input type="text" id="loginCaptchaInput" placeholder="Answer" inputmode="numeric">
+
+
                 </div>
             </div>
 
+
+            <div class="popup-actions">
+                <button class="btn btn-success" onclick="handleLogin()">Login</button>
+                <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
+            </div>
+
+            <p class="auth-switch">
+                New faculty member?
+                <a href="javascript:void(0)" onclick="switchToSignup()">Register here</a>
+            </p>
+
             
          </div>
-
-
-
+</div>
         <!-- TOAST CONTAINER -->
         <div class="toast-container"></div>
 

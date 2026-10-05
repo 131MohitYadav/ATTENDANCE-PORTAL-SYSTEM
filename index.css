@@ -808,3 +808,23 @@ body.dark-mode .empty-state h4 {
     overflow-y: auto;
 }
 
+.auth-popup::-webkit-scrollbar{
+    width: 6px;
+}
+
+.auth-popup::-webkit-scrollbar-thumb{
+    background: #3498db;
+    border-radius: 10px;
+}
+
+.auth-header{
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.auth-icon{
+    font-size: 48px;
+    margin-bottom: 8px;
+    display: inline block;
+}
+

@@ -790,3 +790,21 @@ body.dark-mode .empty-state h4 {
 
 
 /*     NEW CSS  MODULE     */
+
+
+.required {
+    color: #e74c3c;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+ /* AUTH POPUP - SIGNUP AND LOGIN */
+
+.auth-popup{
+    min-width: 420px;
+    max-width: 460px;
+    padding: 30px 35px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+

@@ -826,5 +826,21 @@ body.dark-mode .empty-state h4 {
     font-size: 48px;
     margin-bottom: 8px;
     display: inline block;
+    animation: pulse 2s infinite;
 }
 
+.auth-header h2{
+    font-size: 24px;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body.dark-mode .auth-header h2{
+    background: linear-gradient(135deg, #3498db,#ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

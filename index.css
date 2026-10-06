@@ -1065,3 +1065,31 @@ body.dark-mode .auth-switch{
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
+
+.btn-logout:hover{
+    background: #c0392b;
+    transform: scale(1.05);
+}
+
+
+/* PORTAL LOCKED  */
+
+.portal-locked{
+    filter: blur(6px);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.6;
+    transition: filter 0.4s, opacity 0.4s;
+}
+
+/* SMALL SCREEN TWEAKS */
+@media(max-width:500px){
+    .auth-popup{
+        min-width: unset;
+        width: 92%;
+        padding: 24px 22px;
+    }
+    .captcha-box{
+        flex-direction: column;
+    }
+}

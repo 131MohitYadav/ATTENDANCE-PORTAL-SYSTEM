@@ -986,4 +986,17 @@ function showLoggedInUI(session) {
 
     chip.style.display  = 'inline-flex';
     logoutBtn.style.display = 'inline-block';
+
+    const firstName = session.name.split(' ')[0];
+    nameEl.textContent = firstName;
+    avatarEl.textContent = session.name.charAt(0).toUpperCase();
+    roleEl.textContent = setSession.role || 'Faculty';
+}
+
+function showLoggedOutUI(){
+
+    const chip = document.getElementById('userChip');
+    const logoutBtn = document.getElementById('logoutBtn');
+    if ( chip) chip.style.display = 'none';
+    if ( logoutBtn) logoutBtn.style.display = 'none';
 }

@@ -957,10 +957,20 @@ function checkSession(){
     const session = getSession();
     if(session) {
         showLoggedInUI(session);
-        unlockportal();
+        unlockPortal();
     } else {
         showLoggedInUI();
-        lockportal();
+        lockPortal();
         openSignupPopup();
     }
+}
+
+function lockPortal(){
+    const c = document.querySelector('.container');
+    if ( c ) c.classList.add('portal-locked');
+}
+
+function unlockPortal(){
+    const c = document.querySelector('.container');
+    if ( c ) c.classList.remove('portal-locked');
 }

@@ -933,3 +933,27 @@ function getUsers() {
 function saveUsers(users){
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
+
+function setSession(user){
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        empId: user.empId,
+        department: user.department,
+        loggedInAt: new Date().toISOString()
+    }));
+}
+
+function getSession(){
+    return JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+}
+
+function clearSession(){
+    localStorage.removeItem(SESSION_KEY);
+}
+
+function checkSession(){
+    const session = getSession();
+    if
+}

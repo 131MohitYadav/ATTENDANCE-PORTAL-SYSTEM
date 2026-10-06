@@ -974,3 +974,16 @@ function unlockPortal(){
     const c = document.querySelector('.container');
     if ( c ) c.classList.remove('portal-locked');
 }
+
+function showLoggedInUI(session) {
+    const chip = document.getElementById('userChip');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const nameEl = document.getElementById('userName');
+    const avatarEl = document.getElementById('userAvatar');
+    const roleEl = document.getElementById('userRole');
+
+    if ( !chip || !nameEl || !avatarEl || !logoutBtn || !roleEl) return;
+
+    chip.style.display  = 'inline-flex';
+    logoutBtn.style.display = 'inline-block';
+}

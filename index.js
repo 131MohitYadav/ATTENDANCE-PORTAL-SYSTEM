@@ -915,3 +915,21 @@ window.showStudentsList = showStudentsList;
 window.editStudent = editStudent;
 window.deleteStudent = deleteStudent;
 window.markAttendance = markAttendance;
+
+
+/*  NEW FACULTY AUTH  */
+
+const USERS_KEY = 'sap_faculty-users';
+const SESSION_KEY = 'sap_faculty_session';
+
+let signupCaptchaAnswer = null;
+let loginCaptchaAnswer = null;
+
+function getUsers() {
+    return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+
+}
+
+function saveUsers(users){
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}

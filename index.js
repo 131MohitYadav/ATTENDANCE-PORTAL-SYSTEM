@@ -955,5 +955,12 @@ function clearSession(){
 
 function checkSession(){
     const session = getSession();
-    if
+    if(session) {
+        showLoggedInUI(session);
+        unlockportal();
+    } else {
+        showLoggedInUI();
+        lockportal();
+        openSignupPopup();
+    }
 }

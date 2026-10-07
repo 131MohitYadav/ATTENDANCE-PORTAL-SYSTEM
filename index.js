@@ -1071,3 +1071,15 @@ function generateLoginCaptcha() {
     if ( i) i.value = '';
 }
 
+function handleSignup(){
+    const role = document.getElementById('signupRole').value;
+    const name = document.getElementById('signupName').value.trim();
+    const empId = document.getElementById('signupEmpId').value.trim().toUppercase();
+    const dept = document.getElementById('signupDept').value;
+    const email = document.getElementById('signupEmail').value.trim().toUpperCase();
+    const pass = document.getElementById('signupPassword').value;
+    const cap = document.getElementById('signupCaptchaInput').value.trim();
+
+    
+
+}

@@ -1083,11 +1083,10 @@ function handleSignup(){
 }
 
 
-if (!role) {
+if (!role) { showToast('Please select a role.', 'error'); return ; }
 
-    showToast('Please select a role.', 'error'); return ; 
-}
+    if(!name || name.length < 3) { showToast('Please enter your fullname.', 'error'); return; }
 
-    if(!name || name.length < 3) {
-        showToast('Please enter your fullname.', 'error'); return; 
-    }
+      if(!empId || empId.length < 4) {showToast('Please enter a valid Employee ID.', 'error'); return;}
+
+        if(!dept) {showToast('Please select your department.', 'error'); return;}

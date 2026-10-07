@@ -1093,4 +1093,21 @@ if (!role) { showToast('Please select a role.', 'error'); return ; }
           if ( !/^[^\s@] + @[^\s@]+ $/.test(email)) {
             showToast('Please enter a valid email.' , 'error'); return;
           }
+
+          if ( pass.length < 6) {showToast('Password must be 6+ characters.', 'error'); return; }
+          if(parseInt(cap, 10) !== signupCaptchaAnswer){
+            showToast('❌ Incorrect captcha. Try again.', 'error')
+            generateSignupCaptcha(); return;
+          }
+
+          const users = getUsers();
+          if ( users.some(u => u.email === email)) {
+            showToast('Email already registered. Please login.', 'warning');
+            generateSignupCaptcha(); return;
+          }
+          if ( users.some(u => u.empId === empId)) {
+            showToast('Employee ID already in use.', 'warning');
+            generateSignupCaptcha(); return;
+          }
+
           

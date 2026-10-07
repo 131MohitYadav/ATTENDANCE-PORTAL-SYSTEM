@@ -1080,6 +1080,14 @@ function handleSignup(){
     const pass = document.getElementById('signupPassword').value;
     const cap = document.getElementById('signupCaptchaInput').value.trim();
 
-    
-
 }
+
+
+if (!role) {
+
+    showToast('Please select a role.', 'error'); return ; 
+}
+
+    if(!name || name.length < 3) {
+        showToast('Please enter your fullname.', 'error'); return; 
+    }

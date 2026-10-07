@@ -1090,3 +1090,7 @@ if (!role) { showToast('Please select a role.', 'error'); return ; }
       if(!empId || empId.length < 4) {showToast('Please enter a valid Employee ID.', 'error'); return;}
 
         if(!dept) {showToast('Please select your department.', 'error'); return;}
+          if ( !/^[^\s@] + @[^\s@]+ $/.test(email)) {
+            showToast('Please enter a valid email.' , 'error'); return;
+          }
+          

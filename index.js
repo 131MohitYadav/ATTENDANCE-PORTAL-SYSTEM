@@ -1008,3 +1008,26 @@ function openSignupPopup() {
     const p = document.getElementById('signupPopup');
     if (p) p.classList.add('active');
 }
+
+function openLoginPopup(){
+    closePopup();
+    generateLoginCaptcha();
+    clearLoginForm();
+    const p =  document.getElementById('loginPopup');
+    if(p) p.classList.add('active');
+}
+
+function switchToLogin() { openLoginPopup(); }
+function switchToLogin() { openSignupPopup(); }
+
+
+function clearSignupForm() {
+    ['signupRole', 'signupName', 'signupEmpId', 'signupDept',
+        'signupEmail', 'signupPassword', 'signupCaptchaInput']
+        .forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+}
+
+

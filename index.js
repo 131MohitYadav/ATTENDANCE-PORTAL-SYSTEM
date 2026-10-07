@@ -1110,4 +1110,21 @@ if (!role) { showToast('Please select a role.', 'error'); return ; }
             generateSignupCaptcha(); return;
           }
 
-          
+          const newUser = {
+            name, email, password: pass, role, empId,
+            department: dept,
+            createdAt: new Date().toISOString()
+          };
+
+          users.push(newUser);
+          saveUsers(users);
+
+          setSession(newUser);
+          showLoggedInUI(newUser);
+          unlockPortal();
+          closePopup();
+
+          showToast(`Welcome, ${role} ${name.split(' ')[0]}!`, 'success');
+
+        
+

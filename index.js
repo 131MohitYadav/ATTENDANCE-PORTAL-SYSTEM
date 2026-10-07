@@ -1052,3 +1052,22 @@ function makeCaptcha() {
 }
 
 
+function generateSignupCaptcha() {
+    const {text, answer } = makeCaptcha();
+    signupCaptchaAnswer  = answer;
+    const t = document.getElementById('signupCaptchaText');
+    const i = document.getElementById('signupCaptchaInput');
+    if ( t) t.textContent = text + ' = ?';
+    if ( i) i.value = '';
+}
+
+
+function generateLoginCaptcha() {
+    const {text, answer } = makeCaptcha();
+    loginCaptchaAnswer  = answer;
+    const t = document.getElementById('loginCaptchaText');
+    const i = document.getElementById('loginCaptchaInput');
+    if ( t) t.textContent = text + ' = ?';
+    if ( i) i.value = '';
+}
+

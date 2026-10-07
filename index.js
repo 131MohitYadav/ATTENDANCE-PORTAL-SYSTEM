@@ -1000,3 +1000,11 @@ function showLoggedOutUI(){
     if ( chip) chip.style.display = 'none';
     if ( logoutBtn) logoutBtn.style.display = 'none';
 }
+
+function openSignupPopup() {
+    closePopup();
+    generateSignupCaptcha();
+    clearSignupForm();
+    const p = document.getElementById('signupPopup');
+    if (p) p.classList.add('active');
+}

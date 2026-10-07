@@ -1029,5 +1029,26 @@ function clearSignupForm() {
             if (el) el.value = '';
         });
 }
+function clearLoginForm() {
+    ['loginEmail', 'loginPassword', 'loginCaptchaInput']
+    .forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
+    });
+}
+
+function makeCaptcha() {
+    const useAdd = Math.random() > 0.4;
+    if(useAdd) {
+        const a = Math.floor(Math.random() * 10) + 1;
+        const b = Math.floor(Math.random() * 10 ) + 1;
+        return { text: `${a} + ${b}`, answer: a + b };
+    }
+    else { 
+        const a = Math.floor(Math.random() * 10) + 5;
+        const b = Math.floor(Math.random() * 5) + 1;
+        return { text: `${a} + ${b}`, answer: a - b};
+    }
+}
 
 

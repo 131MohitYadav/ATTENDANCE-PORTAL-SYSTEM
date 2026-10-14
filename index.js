@@ -826,7 +826,7 @@ function checkSession() {
     } else {
         showLoggedOutUI();
         lockPortal();
-        openLoginPopup();
+        openLoginPopup();   // 🔐 Login first
     }
 }
 
@@ -840,24 +840,43 @@ function unlockPortal() {
     if (c) c.classList.remove('portal-locked');
 }
 
+// ================================
+// SHOW LOGGED-IN UI (Avatar | Prof | ROLE | Name)
+// ================================
 function showLoggedInUI(session) {
     if (!session) return showLoggedOutUI();
 
-    const chip = document.getElementById('userChip');
+    const chip      = document.getElementById('userChip');
     const logoutBtn = document.getElementById('logoutBtn');
-    const nameEl = document.getElementById('userName');
-    const avatarEl = document.getElementById('userAvatar');
-    const roleEl = document.getElementById('userRole');
+    const nameEl    = document.getElementById('userName');
+    const avatarEl  = document.getElementById('userAvatar');
+    const roleEl    = document.getElementById('userRole');
+    const prefixEl  = document.getElementById('userPrefix');
 
-    if (!chip || !nameEl || !avatarEl || !logoutBtn || !roleEl) return;
+    if (!chip || !nameEl || !avatarEl || !logoutBtn || !roleEl || !prefixEl) return;
 
     chip.style.display = 'inline-flex';
     logoutBtn.style.display = 'inline-block';
 
-    const firstName = session.name.split(' ')[0];
-    nameEl.textContent = firstName;
-    avatarEl.textContent = session.name.charAt(0).toUpperCase();
-    roleEl.textContent = session.role || 'Faculty';
+    const rawName = session.name.trim();
+    const role = session.role || 'Faculty';
+
+    // 👇 Prefix based on role
+    let prefix = '';
+    if (role === 'Teacher' || role === 'Faculty') {
+        prefix = 'Prof';
+    } else if (role === 'Admin') {
+        prefix = 'Dr';
+    }
+
+    // 👇 Remove any title user typed themselves (to prevent "Prof Prof. Rajeev")
+    const cleanName = rawName.replace(/^(prof|dr|mr|mrs|ms|miss)\.?\s+/i, '');
+
+    // 👇 Set all 4 parts of the chip
+    prefixEl.textContent = prefix;
+    roleEl.textContent = role.toUpperCase();
+    nameEl.textContent = cleanName;
+    avatarEl.textContent = cleanName.charAt(0).toUpperCase();
 }
 
 function showLoggedOutUI() {

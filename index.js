@@ -826,7 +826,7 @@ function checkSession() {
     } else {
         showLoggedOutUI();
         lockPortal();
-        openSignupPopup();
+        openLoginPopup();
     }
 }
 

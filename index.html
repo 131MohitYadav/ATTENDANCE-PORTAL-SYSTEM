@@ -1,302 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Student Attendance Portal</title>
-        <link rel="stylesheet" href="index.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Portal</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
 
-    <div>
-        <!-- NAVIGATION BAR -->
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <h1>Student Attendance Portal</h1>
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1>Student Attendance Portal</h1>
+        </div>
+        <div class="navbar-actions">
+            <span id="currentDateTime" class="datetime-display"></span>
+
+            <!-- USER CHIP -->
+            <span id="userChip" class="user-chip" style="display:none;">
+                <span class="avatar" id="userAvatar">?</span>
+                <span id="userName">Guest</span>
+                <span class="role-badge" id="userRole">Teacher</span>
+            </span>
+
+            <button class="theme-toggle" onclick="toggleTheme()">Dark</button>
+
+            <!-- LOGOUT BUTTON -->
+            <button class="btn-logout" id="logoutBtn" style="display:none;"
+                onclick="handleLogout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="section-header">
+            <h2>Mark Attendance</h2>
+            <div class="header-actions">
+                <span class="academic-badge">Academic Year: 2026-27</span>
             </div>
-            <div class="navbar-actions">
-                <span id="currentDateTime" class="datetime-display"></span>
+        </div>
 
-                <!-- USER CHIP -->
-                <span id="userChip" class="user-chip" style="display: none ;">
-                    <span class="avatar" id="usrAvatar">?</span>
-                    <span id="userName">Guest</span>
-                    <span class="role-badge" id="userRole">Teacher</span>
-                </span>
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+            <button class="btn btn-primary btn-sm" onclick="showAddStudentForm()">Add Student</button>
+            <button class="btn btn-success btn-sm" onclick="showAddClassForm()">Add Class</button>
+            <button class="btn btn-warning btn-sm" onclick="exportToCSV()">Export CSV</button>
+            <button class="btn btn-info btn-sm" onclick="exportToPDF()">Export PDF</button>
+            <button class="btn btn-danger btn-sm" onclick="resetAttendance()">Reset</button>
+        </div>
 
-                <button class="theme-toggle"
-                    onclick="toggleTheme()">Dark</button>
+        <!-- CLASS SELECTOR -->
+        <div class="form-group">
+            <label for="classSelector">Select Class:</label>
+            <select id="classSelector" required onchange="showStudentsList()">
+                <option value="">-- Select a Class --</option>
+            </select>
+        </div>
 
-                <!-- LOGOUT BUTTON -->
-                <button class="btn-logout" id="logoutBtn" style="display: none ;"
-                    onclick="handleLogout()">Logout</button>
-            </div>
-        </nav>
+        <!-- STUDENT LIST -->
+        <div class="studentListContainer" id="studentListContainer">
+            <h3>Students</h3>
+            <ul id="studentsList" class="student-list"></ul>
+        </div>
 
-        <!-- MAIN CONTAINER -->
-        <div class="container">
-
-            <!-- HEADER -->
-            <div class="section-header">
-                <h2>Mark Attendance</h2>
-                <div class="header-actions">
-                    <span class="academic-badge">Academic Year: 2026-27</span>
+        <!-- SUMMARY SECTION -->
+        <div class="summarySection" id="summarySection" style="display:none;">
+            <h3>Attendance Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-card total">
+                    <div class="number" id="totalStudents">0</div>
+                    <div class="label">Total Students</div>
+                </div>
+                <div class="summary-card present">
+                    <div class="number" id="totalPresent">0</div>
+                    <div class="label">Present</div>
+                </div>
+                <div class="summary-card absent">
+                    <div class="number" id="totalAbsent">0</div>
+                    <div class="label">Absent</div>
+                </div>
+                <div class="summary-card leave">
+                    <div class="number" id="totalLeave">0</div>
+                    <div class="label">Leave</div>
                 </div>
             </div>
+            <div class="attendance-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="attendanceProgress" style="width:0%;"></div>
+                </div>
+                <span id="attendancePercent">0% Present</span>
+            </div>
+        </div>
 
-            <!-- TOOLBAR -->
-            <div class="toolbar">
-                <button class="btn btn-primary btn-sm"
-                    onclick="showAddStudentForm()">Add Student</button>
-                <button class="btn btn-success btn-sm"
-                    onclick="showAddClassForm()">Add Class</button>
-                <button class="btn btn-warning btn-sm"
-                    onclick="exportToCSV()">Export CSV</button>
-                <button class="btn btn-info btn-sm"
-                    onclick="exportToPDF()">Export PDF</button>
-                <button class="btn btn-danger btn-sm"
-                    onclick="resetAttendance()">Reset</button>
+        <!-- SUBMIT BUTTON -->
+        <button class="btn btn-primary submit-btn" onclick="submitAttendance()">Submit Attendance</button>
+
+        <!-- RESULT SECTION -->
+        <div id="resultSection" style="display:none;">
+            <h3>Attendance Report</h3>
+            <div class="result-grid">
+                <div class="result-item">
+                    <span class="result-label">Date</span>
+                    <span class="result-value" id="attendanceDate">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Time</span>
+                    <span class="result-value" id="attendanceTime">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Class</span>
+                    <span class="result-value" id="attendanceClass">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Total</span>
+                    <span class="result-value" id="attendanceTotalStudents">-</span>
+                </div>
+                <div class="result-item present-result">
+                    <span class="result-label">Present</span>
+                    <span class="result-value" id="attendancePresent">-</span>
+                </div>
+                <div class="result-item absent-result">
+                    <span class="result-label">Absent</span>
+                    <span class="result-value" id="attendanceAbsent">-</span>
+                </div>
+                <div class="result-item leave-result">
+                    <span class="result-label">Leave</span>
+                    <span class="result-value" id="attendanceLeave">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD STUDENT POPUP -->
+    <div class="popup-overlay" id="addStudentPopup">
+        <div class="popup">
+            <h2>Add Student</h2>
+            <div class="form-group">
+                <label for="newStudentName">Student Name:</label>
+                <input type="text" id="newStudentName" placeholder="Enter student name" required>
+            </div>
+            <div class="form-group">
+                <label for="newStudentRoll">Roll Number:</label>
+                <input type="text" id="newStudentRoll" placeholder="Enter roll number" required>
+            </div>
+            <div class="popup-actions">
+                <button class="btn btn-primary" onclick="addStudent()">Add</button>
+                <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD CLASS POPUP -->
+    <div class="popup-overlay" id="addClassPopup">
+        <div class="popup">
+            <h2>Add Class</h2>
+            <div class="form-group">
+                <label for="newClassName">Class Name:</label>
+                <input type="text" id="newClassName" placeholder="e.g., Class 10-A" required>
+            </div>
+            <div class="popup-actions">
+                <button class="btn btn-success" onclick="addClass()">Add</button>
+                <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FACULTY SIGNUP POPUP -->
+    <div class="popup-overlay auth-overlay" id="signupPopup">
+        <div class="popup auth-popup">
+            <div class="auth-header">
+                <div class="auth-icon">👨‍🏫</div>
+                <h2>Faculty Registration</h2>
+                <p class="auth-subtitle">Register as a Teacher / Faculty member</p>
             </div>
 
-            <!-- CLASS SELECTOR -->
             <div class="form-group">
-                <label for="classSelector">Select Class:</label>
-                <select id="classSelector" required
-                    onchange="showStudentsList()">
-                    <option value>-- Select a Class --</option>
+                <label for="signupRole">Register As <span class="required">*</span></label>
+                <select id="signupRole">
+                    <option value="">-- Select Role --</option>
+                    <option value="Teacher">Teacher</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="Admin">Admin</option>
                 </select>
             </div>
 
-            <!-- STUDENT LIST -->
-            <div class="studentListContainer" id="studentListContainer">
-                <h3>Students</h3>
-                <ul id="studentsList" class="student-list"></ul>
+            <div class="form-group">
+                <label for="signupName">Full Name <span class="required">*</span></label>
+                <input type="text" id="signupName" placeholder="e.g., Prof. Rajeev Kumar">
             </div>
 
-            <!-- SUMMARY SECTION -->
-            <div class="summarySection" id="summarySection"
-                style="display: none;">
-                <h3>Attendance Summary</h3>
-                <div class="summary-grid">
-                    <div class="summary-card total">
-                        <div class="number" id="totalStudents">0</div>
-                        <div class="label">Total Students</div>
-                    </div>
-                    <div class="summary-card present">
-                        <div class="number" id="totalPresent">0</div>
-                        <div class="label">Present</div>
-                    </div>
-                    <div class="summary-card absent">
-                        <div class="number" id="totalAbsent">0</div>
-                        <div class="label">Absent</div>
-                    </div>
-                    <div class="summary-card leave">
-                        <div class="number" id="totalLeave">0</div>
-                        <div class="label">Leave</div>
-                    </div>
-                </div>
-                <div class="attendance-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="attendanceProgress"
-                            style="width: 0%;"></div>
-                    </div>
-                    <span id="attendancePercent">0% Present</span>
+            <div class="form-group">
+                <label for="signupEmpId">Employee ID <span class="required">*</span></label>
+                <input type="text" id="signupEmpId" placeholder="e.g., FAC-2024-001">
+            </div>
+
+            <div class="form-group">
+                <label for="signupDept">Department <span class="required">*</span></label>
+                <select id="signupDept">
+                    <option value="">-- Select Department --</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Biology">Biology</option>
+                    <option value="English">English</option>
+                    <option value="Commerce">Commerce</option>
+                    <option value="Administration">Administration</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="signupEmail">Official Email <span class="required">*</span></label>
+                <input type="email" id="signupEmail" placeholder="name@school.edu" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="signupPassword">Password <span class="required">*</span></label>
+                <div class="password-wrapper">
+                    <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
+                    <button type="button" class="toggle-password"
+                        onclick="togglePassword('signupPassword', this)">👁️</button>
                 </div>
             </div>
 
-            <!-- SUBMIT BUTTON -->
-            <button class="btn btn-primary submit-btn"
-                onclick="submitAttendance()">Submit Attendance</button>
-
-            <!-- RESULT SECTION -->
-            <div id="resultSection" style="display: none;">
-                <h3>Attendance Report</h3>
-                <div class="result-grid">
-                    <div class="result-item">
-                        <span class="result-label">Date</span>
-                        <span class="result-value" id="attendanceDate">-</span>
+            <div class="form-group">
+                <label>Security Check <span class="required">*</span></label>
+                <div class="captcha-box">
+                    <div class="captcha-question">
+                        <span id="signupCaptchaText">-- + --</span>
+                        <button type="button" class="captcha-refresh"
+                            onclick="generateSignupCaptcha()" title="Refresh">🔄</button>
                     </div>
-                    <div class="result-item">
-                        <span class="result-label">Time</span>
-                        <span class="result-value" id="attendanceTime">-</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Class</span>
-                        <span class="result-value" id="attendanceClass">-</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Total</span>
-                        <span class="result-value"
-                            id="attendanceTotalStudents">-</span>
-                    </div>
-                    <div class="result-item present-result">
-                        <span class="result-label">Present</span>
-                        <span class="result-value"
-                            id="attendancePresent">-</span>
-                    </div>
-                    <div class="result-item absent-result">
-                        <span class="result-label">Absent</span>
-                        <span class="result-value"
-                            id="attendanceAbsent">-</span>
-                    </div>
-                    <div class="result-item leave-result">
-                        <span class="result-label">Leave</span>
-                        <span class="result-value" id="attendanceLeave">-</span>
-                    </div>
+                    <input type="text" id="signupCaptchaInput" placeholder="Answer" inputmode="numeric">
                 </div>
             </div>
+
+            <div class="popup-actions">
+                <button class="btn btn-primary" onclick="handleSignup()">Register</button>
+                <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
+            </div>
+
+            <p class="auth-switch">
+                Already registered?
+                <a href="javascript:void(0)" onclick="switchToLogin()">Login here</a>
+            </p>
         </div>
+    </div>
 
-        <!-- ADD STUDENT POPUP -->
-        <div class="popup-overlay" id="addStudentPopup">
-            <div class="popup">
-                <h2>Add Student</h2>
-                <div class="form-group">
-                    <label for="newStudentName">Student Name:</label>
-                    <input type="text" id="newStudentName"
-                        placeholder="Enter student name" required>
-                </div>
-                <div class="form-group">
-                    <label for="newStudentRoll">Roll Number:</label>
-                    <input type="text" id="newStudentRoll"
-                        placeholder="Enter roll number" required>
-                </div>
-                <div class="popup-actions">
-                    <button class="btn btn-primary"
-                        onclick="addStudent()">Add</button>
-                    <button class="btn btn-outline"
-                        onclick="closePopup()">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ADD CLASS POPUP -->
-        <div class="popup-overlay" id="addClassPopup">
-            <div class="popup">
-                <h2>Add Class</h2>
-                <div class="form-group">
-                    <label for="newClassName">Class Name:</label>
-                    <input type="text" id="newClassName"
-                        placeholder="e.g., Class 10-A" required>
-                </div>
-                <div class="popup-actions">
-                    <button class="btn btn-success"
-                        onclick="addClass()">Add</button>
-                    <button class="btn btn-outline"
-                        onclick="closePopup()">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- FACULTY SIGNUP PAGE  -->
-
-        <div class="popup-overlay auth-overlay" id="signupPopup">
-            <div class="popup auth-popup">
-                <div class="auth-header">
-                    <div class="auth-icon">👨‍🏫</div>
-                    <h2>Faculty Registration</h2>
-                    <p class="auth-subtitle">Register as a Teacher / Faculty member</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="signupRole">Register As <span class="required">*
-
-                    </span></label>
-                    <select id="signupRole">
-                        <option value="">-- Select Role --</option>
-                        <option value="Teacher">Teacher</option>
-                        <option value="Faculty">Faculty</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="signupName">Full Name <span class="required">*
-
-                    </span></label>
-                    <input type="text" id="signupName" placeholder="e.g, Prof.Rajeev Kumar">
-
-                </div>
-
-                <div class="form-group">
-                    <label for="signupEmpId">Employee ID  <span class="required">*
-
-                    </span></label>
-                    <input type="text" id="signupEmpId" placeholder="e.g., FAC-2024-001">
-                </div>
-
-                <div class="form-group">
-                    <label for="signupDept">Department <span class="required">*
-
-                    </span></label>
-
-
-                    <select id="signupDept">
-                        <option value="">-- Select Department --</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Biology">Biology</option>
-                        <option value="English">English</option>
-                        <option value="Commerce">Commerce</option>
-                        <option value="Administration">Administration</option>
-                        
-                    </select>
-                 </div>
-
-                 <div class="form-group">
-                    <label for="signupEmail">Official Email <span class="required">*
-
-                    </span></label>
-                    <input type="email" id="signupEmail" placeholder="name@school.edu" autocomplete="email">
-
-                 </div>
-
-
-                 <div class="form-group">
-                    <label for="signupPassword">Password <span class="required">*</span></label>
-
-                    <div class="Password-wrapper">
-                        <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
-                        <button type="button" class="toggle-password" onclick="togglePassword('signupPassword',this)">👁️</button>
-
-                    </div>
-                 </div>
-
-
-                 <div class="form-group">
-                    <label>Security Check <span class="required">*</span></label>
-
-                    <div class="captcha-box">
-                        <div class="captcha-question">
-                            <span id="signupCaptchaText">-- + --</span>
-                            <button type="button" class="captcha-refresh" onclick="generateSignupCaptcha()" title="captcha-refresh">
-                                🔄
-                            </button>
-                        </div>
-
-                        <input type="text" id="signupCaptchaInput" placeholder="Answer" inputmode="numeric">
-                    </div>
-                 </div>
-
-
-                 <div class="popup-actions">
-                    <button class="btn btn-primary" onclick="handleSignup()">Register</button>
-                    <button class="btn btn-outline" onclick="closePopup()">Cancel</button>
-                 </div>
-
-
-                 <p class="auth-switch">
-                    Already registered?
-                    <a href="javascript:void(0)" onclick="switchToLogin()">Login here</a>
-                 </p>
-
-             </div>
-
-        </div>
-
-        <!-- FACULTY LOGIN POPUP (FULL - NEW ) -->
-         <div class="popup-overlay auth-overlay" id="loginPopup"></div>
-         <div class="popup auth-popup">
+    <!-- FACULTY LOGIN POPUP -->
+    <div class="popup-overlay auth-overlay" id="loginPopup">
+        <div class="popup auth-popup">
             <div class="auth-header">
                 <div class="auth-icon">🔐</div>
                 <h2>Faculty Login</h2>
@@ -312,24 +266,22 @@
                 <label for="loginPassword">Password</label>
                 <div class="password-wrapper">
                     <input type="password" id="loginPassword" placeholder="Enter your password">
-                    <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</button>
+                    <button type="button" class="toggle-password"
+                        onclick="togglePassword('loginPassword', this)">👁️</button>
                 </div>
             </div>
-
 
             <div class="form-group">
                 <label>Security Check</label>
                 <div class="captcha-box">
                     <div class="captcha-question">
-                        <span id="loginCapthaText">-- + --</span>
-                        <button type="button" class="captcha-refresh" onclick="generateLoginCaptcha()" title="Refresh">🔄</button>
-                        </div>
-<input type="text" id="loginCaptchaInput" placeholder="Answer" inputmode="numeric">
-
-
+                        <span id="loginCaptchaText">-- + --</span>
+                        <button type="button" class="captcha-refresh"
+                            onclick="generateLoginCaptcha()" title="Refresh">🔄</button>
+                    </div>
+                    <input type="text" id="loginCaptchaInput" placeholder="Answer" inputmode="numeric">
                 </div>
             </div>
-
 
             <div class="popup-actions">
                 <button class="btn btn-success" onclick="handleLogin()">Login</button>
@@ -340,15 +292,13 @@
                 New faculty member?
                 <a href="javascript:void(0)" onclick="switchToSignup()">Register here</a>
             </p>
+        </div>
+    </div>
 
-            
-         </div>
-</div>
-        <!-- TOAST CONTAINER -->
-        <div class="toast-container"></div>
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container"></div>
 
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="index.js"></script>
-    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="index.js"></script>
+</body>
 </html>
